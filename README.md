@@ -1,2 +1,2 @@
 # Leave-Management-System
-Application of leave management system using Blockchain.
+Implementation of Leave Management System using Blockchain.
