@@ -1,13 +1,12 @@
 /*Important bugs to be addressed
-1)In register function if admin registers a person 
-who is already registered, then its leave count starts with 0
 
-2) In the ask_leave function, it is to be checked if the person 
-asking for leave if actually registered in the database;
+2) In the ask_leave and ask_available function, it is to be checked if the person 
+asking for leave is actually registered in the database;
 
 3) ask_leave function is to be made more dynamic and interactive
 so that if lesser number of leaves are available then it can ask
 if the person agrees to take that much of leave
+
 4)On testing this on remix IDE, number of leaves available with admin 
 shows up to be 50 all the time, this has to be fixed
 */
@@ -25,9 +24,7 @@ contract Leave
 {
     struct Person
     {
-        address delegate;//an unknown variable
-
-
+        
         string name;//name of the person
         uint64 id;// identity card number
         bool available;//if there is chance of taking leave
@@ -39,6 +36,7 @@ contract Leave
     bool admindone=false;
     
     mapping(address=>Person) person;//mapping address to the person
+    mapping(address=>bool) registered;
 
     function makeadmin(string memory nname, uint64 idd) public
     {
@@ -49,6 +47,7 @@ contract Leave
         person[admin].id=idd;
         person[admin].available=true;
         person[admin].leave_count=0;
+        registered[admin]=true;
         admindone=true;
     }
     function setmaxleave(uint64 count) public//function to set the maximum number of leaves that can be taken
@@ -59,18 +58,21 @@ contract Leave
     //function to register a new person to the database
     function register(address toPerson, string memory nname, uint64 idd) public
     {
-        if(msg.sender!=admin)return;
+        if(msg.sender!=admin||registered[toPerson]==true)return;
+        
         person[toPerson].name=nname;
         person[toPerson].id=idd;
         person[toPerson].available=true;
         person[toPerson].leave_count=0;
+        registered[toPerson]=true;
     }
     //function for a person to check number of days available for him to take a leave
     function ask_available() public view returns (uint64 days_available)
     {
         address temp;
         temp=msg.sender;
-
+        
+        
         //it is to be checked here if the person asking
         //for leave is there in the database
         days_available=max_leave-person[temp].leave_count;
@@ -81,11 +83,11 @@ contract Leave
     
     //for this function some special arrangements are to be made to print
     //the message corresponding to the integer reply
-    function ask_leave(uint64 count_days) public returns (uint8 reply)//function for person to ask leave
+    function ask_leave(uint64 count_days) public returns (int8 reply)//function for person to ask leave
     {
         address temp;
         temp=msg.sender;
-        
+    
         //it is to be checked if the person asking for
         //leave is actually registered in the database
         if(person[temp].available==false)reply=0;
