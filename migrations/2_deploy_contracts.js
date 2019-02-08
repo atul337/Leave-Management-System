@@ -1,5 +1,5 @@
-var LeaveContract = artifacts.require("./leave.sol");
+var SimpleStorage = artifacts.require("./SimpleStorage.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(LeaveContract);
+  deployer.deploy(SimpleStorage);
 };

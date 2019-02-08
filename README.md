@@ -1,2 +1,2 @@
-# Leave-Management-System
-Implementation of Leave Management System using Blockchain.
+# truffle-react-box
+A boilerplate for Dapps configured to work with Ganache-GUI.
