@@ -1,14 +1,14 @@
 /*Important bugs to be addressed
 
-2) In the ask_leave and ask_available function, it is to be checked if the person 
-asking for leave is actually registered in the database;
-
 3) ask_leave function is to be made more dynamic and interactive
 so that if lesser number of leaves are available then it can ask
 if the person agrees to take that much of leave
 
 4)On testing this on remix IDE, number of leaves available with admin 
 shows up to be 50 all the time, this has to be fixed
+
+5)need to change the visibilities of various functions
+
 */
 
 /*Solidity Smart Contract for Leave Management System
@@ -20,27 +20,31 @@ B.Tech Second Year, IIT Patna
 */
 
 pragma solidity >=0.4.22 <0.6.0;
+
 contract Leave
 {
     struct Person
     {
-        
         string name;//name of the person
-        uint64 id;// identity card number
+        string id;// identity card number
         bool available;//if there is chance of taking leave
         uint64 leave_count;//number of leaves taken till date
     }
+
     uint64 max_leave;//maximum number of leaves that can be taken in a year
     
     address admin;//the person who can register someone into the database
-    bool admindone=false;
     
-    mapping(address=>Person) person;//mapping address to the person
-    mapping(address=>bool) registered;
+    bool admindone=false;//checks if admin is there(added later)
 
-    function makeadmin(string memory nname, uint64 idd) public
+    mapping(address=>Person) person;//mapping address to the person
+    mapping(address=>bool) registered;//this store if the person is registered in the database
+    
+    
+    mapping(string=>address)emp_details;//added later
+
+    function makeadmin(string memory nname, string memory idd) public
     {
-        if(admindone)return;
         //following steps are just the registration of admin with all his details
         admin=msg.sender;//registering admin as the sender of the argument to this function
         person[admin].name=nname;
@@ -48,27 +52,30 @@ contract Leave
         person[admin].available=true;
         person[admin].leave_count=0;
         registered[admin]=true;
+        emp_details[idd]=admin;
         admindone=true;
     }
     function setmaxleave(uint64 count) public//function to set the maximum number of leaves that can be taken
     {
-        if(msg.sender!=admin)return;
+        if(msg.sender!=admin){revert();}
         max_leave=count;
     }
     //function to register a new person to the database
-    function register(address toPerson, string memory nname, uint64 idd) public
+    function register(address toPerson, string memory nname, string memory idd) public
     {
-        if(msg.sender!=admin||registered[toPerson]==true)return;
+        if(msg.sender!=admin||registered[toPerson]==true){revert();}
         
         person[toPerson].name=nname;
         person[toPerson].id=idd;
         person[toPerson].available=true;
         person[toPerson].leave_count=0;
         registered[toPerson]=true;
+        emp_details[idd]=toPerson;
     }
     //function for a person to check number of days available for him to take a leave
     function ask_available() public view returns (uint64 days_available)
     {
+        require(registered[msg.sender]==true);
         address temp;
         temp=msg.sender;
         
@@ -85,6 +92,7 @@ contract Leave
     //the message corresponding to the integer reply
     function ask_leave(uint64 count_days) public returns (int8 reply)//function for person to ask leave
     {
+        require(registered[msg.sender]==true);
         address temp;
         temp=msg.sender;
     
@@ -98,6 +106,15 @@ contract Leave
             reply=1;
         }
         else reply=3;
+    }
+
+    function details(string memory idd) view public returns (string memory name, string memory id, uint64 leave_count)
+    {
+        require(msg.sender==admin);
+        address temp=emp_details[idd];
+        name=person[temp].name;
+        id=person[temp].id;
+        leave_count=person[temp].leave_count;
     }
 
 }
