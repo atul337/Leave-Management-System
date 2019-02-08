@@ -1,2 +1,2 @@
-# truffle-react-box
-A boilerplate for Dapps configured to work with Ganache-GUI.
+# Leave-Management-System using Blockchain
+Leave management system using truffle box and ethereum
