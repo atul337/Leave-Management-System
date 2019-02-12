@@ -1,16 +1,3 @@
-/*Important bugs to be addressed
-
-3) ask_leave function is to be made more dynamic and interactive
-so that if lesser number of leaves are available then it can ask
-if the person agrees to take that much of leave
-
-4)On testing this on remix IDE, number of leaves available with admin 
-shows up to be 50 all the time, this has to be fixed
-
-5)need to change the visibilities of various functions
-
-*/
-
 /*Solidity Smart Contract for Leave Management System
 Contributors::
 Amit Priyankar(1701CS04)
@@ -18,7 +5,6 @@ Ankur Dubey(1701CS07)
 Atul Upadhyay(1701CS13)
 B.Tech Second Year, IIT Patna
 */
-
 pragma solidity >=0.4.22 <0.6.0;
 
 contract Leave
@@ -79,9 +65,6 @@ contract Leave
         address temp;
         temp=msg.sender;
         
-        
-        //it is to be checked here if the person asking
-        //for leave is there in the database
         days_available=max_leave-person[temp].leave_count;
         //can also return multiple values here if we want to give 
         //any kind of message to the user asking for leave
@@ -117,6 +100,12 @@ contract Leave
         leave_count=person[temp].leave_count;
     }
 
+    function changeadmin(address newadd) public
+    {
+        if(msg.sender!=admin)revert();
+        require(registered[newadd]==true);
+        admin=newadd;
+    }
 }
 
 /*
@@ -145,3 +134,14 @@ library Sf{
 
 }
 */
+<<<<<<< HEAD:contracts/Leave.sol
+=======
+
+/*Important bugs to be addressed
+1)There must be an option to deregister.
+2) leave extension option must be there which needs approval of admin
+3)There must be a cap to the maximum number of days of leave that can be taken in one go.
+4)need to change the visibilities of various functions
+
+*/
+>>>>>>> b7db67bb35a641b288e20e1451f63176b2b326de:contracts/leave.sol
