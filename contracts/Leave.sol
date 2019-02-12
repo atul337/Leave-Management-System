@@ -33,9 +33,9 @@ contract Leave
 
     uint64 max_leave;//maximum number of leaves that can be taken in a year
     
-    address admin;//the person who can register someone into the database
+    address public admin;//the person who can register someone into the database
     
-    bool admindone=false;//checks if admin is there(added later)
+    bool public admindone=false;//checks if admin is there(added later)
 
     mapping(address=>Person) person;//mapping address to the person
     mapping(address=>bool) registered;//this store if the person is registered in the database

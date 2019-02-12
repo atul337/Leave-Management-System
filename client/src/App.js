@@ -1,11 +1,19 @@
 import React, { Component } from "react";
-import SimpleStorageContract from "./contracts/SimpleStorage.json";
+import LeaveContract from "./contracts/Leave.json";
 import getWeb3 from "./utils/getWeb3";
 
 import "./App.css";
 
 class App extends Component {
-  state = {value: 'default', storageValue: 0, web3: null, accounts: null, contract: null };
+  state = {
+    adminDone : false, 
+    Name: '', 
+    EID: '', 
+    web3: null, 
+    accounts: null, 
+    contract: null,
+    adminAdress: '' 
+  };
 
   componentDidMount = async () => {
     try {
@@ -17,9 +25,9 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = SimpleStorageContract.networks[networkId];
+      const deployedNetwork = LeaveContract.networks[networkId];
       const instance = new web3.eth.Contract(
-        SimpleStorageContract.abi,
+        LeaveContract.abi,
         deployedNetwork && deployedNetwork.address,
       );
 
@@ -42,36 +50,36 @@ class App extends Component {
     // await contract.methods.set(5).send({ from: accounts[0] });
 
     // Get the value from the contract to prove it worked.
-    const response = await contract.methods.get().call();
+    const response = await contract.methods.admindone().call();
+    const adminadd = await contract.methods.admin().call();
 
     // Update state with the result.
-    this.setState({ storageValue: response });
+    this.setState({ adminDone: response, adminAdress: adminadd });
     // this.handleChange = this.handleChange.bind(this);
   };
 
-  handleChange = async (event) => {
-    this.setState({value: event.target.value});
+  handleName = async (event) => {
+    this.setState({Name: event.target.value});
+  }
+  handleEID = async (event) => {
+    this.setState({EID: event.target.value});
   }
 
-  handleSubmit = async (event) => {
+  handleSetAdmin = async (event) => {
     // alert('A name was submitted: ' + this.state.value);
 
     event.preventDefault();
 
     const { accounts, contract } = this.state;
 
-    let x = Number(this.state.value);
-    
-    if(isNaN(x))alert('Not a number');
-    else {
-      if(window.confirm("Are you sure?")){
-        await contract.methods.set(x).send({ from: accounts[0] });
-        window.location.reload();
-      }
-      else {
-        window.location.reload();
-      }
+    if(window.confirm("Are you sure?")){
+      await contract.methods.makeadmin(this.state.Name, this.state.EID).send({ from: accounts[0] });
+      window.location.reload();
     }
+    else {
+      window.location.reload();
+    }
+    
   }
 
 
@@ -79,29 +87,195 @@ class App extends Component {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
-    return (
-      <div className="App">
-        <h1>Good to Go!</h1>
-        <p>Your Truffle Box is installed and ready.</p>
-        <h2>Smart Contract Example</h2>
+    
+    else if(!this.state.adminDone){ 
+      return(
+        <div className="App">
+                  <div id="container">
+            <div id="header">
+              <div id="title">Leave Management System<br></br> Initial Page</div>
+            </div>
+            
+            <div id="content_panel">
+              
+              <div id="heading">Register Admin<hr size="2" color="#FFFFFF" /> 
+          </div>
+              <form onSubmit = {this.handleSetAdmin}>
+                <p>
+                  <label for="full_name" ><span>Name <span class="required">*</span></span>
+                    <input type="text" placeholder="Name" required="required" onChange = {this.handleName} />
+                  </label>
+                  <label for="id"><span>Employee ID<span class="required">*</span></span>
+                    <input type="text" placeholder="Employee ID" required="required" onChange = {this.handleEID}  />
+                  </label>
+                  <label>
+                    <input type="submit" value="Register" />
+                  </label>
+                  
+                </p>
+                <p>&nbsp; </p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+                <p>&nbsp;</p>
+              </form>
+            </div>
+            
+            <div id="footer">
+              <p><br />&copy; Unsullied, All Rights Reserved.</p>
+            </div>
+          </div>
+        </div>
         
-        
-        <p>
-          If your contracts compiled and migrated successfully, you can store any value you want.<br></br>
-          The defalut value will be zero.
-        </p>
+      );
+    }
 
-        <form onSubmit={this.handleSubmit}>
-        <label>
-          Enter the value to store : 
-          <input type="text" onChange={this.handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
-        <br></br>
-        <div>The stored value is: {this.state.storageValue}</div>
-      </div>
-    );
+    else if(this.state.accounts[0] == this.state.adminAdress ){
+      return(
+        <div className = "App">
+          <div id="container">
+              <div id="header">
+                <div id="title">Leave Management System<br></br>Admin Page</div>
+              </div>
+              <div id="content_panel">
+                
+                <div id="heading">Register Employee<hr size="2" color="#FFFFFF" />
+            </div>
+                <form action="admin/add_staff.php" method="post">
+              
+                  <p>
+                    <label for="address" ><span>Address <span class="required">*</span></span>
+                      <input type="text" name="address" id="address" placeholder="Address" required="required" />
+                    </label>
+                    <label for="full_name" ><span>Name <span class="required">*</span></span>
+                      <input type="text" name="full_name" id="full_name" placeholder="Name" required="required"/>
+                    </label>
+                    <label for="id"><span>Employee ID<span class="required">*</span></span>
+                      <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required"/>
+                    </label>
+                    <label>
+                      <input type="submit" value="Register" />
+                    </label>
+                    
+                  </p>
+                  <p>&nbsp; </p>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                  <p>&nbsp;</p>
+                </form>
+              </div>
+              
+              <div id="content_panel">
+                
+                  <div id="heading">Fetch Details<hr size="2" color="#FFFFFF" />
+              </div>
+                  <form action="admin/add_staff.php" method="post">
+                
+                    <p>
+                      
+                      <label for="id"><span>Employee ID<span class="required">*</span></span>
+                        <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required"/>
+                      </label>
+                      <label>
+                        <input type="submit" value="Fetch" />
+                      </label>
+                      
+                    </p>
+                    <p>&nbsp; </p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                  </form>
+                </div>
+                
+              <div id="content_panel">
+                
+                  <div id="heading">Apply Leave<hr size="2" color="#FFFFFF" />
+              </div>
+                  <form action="admin/add_staff.php" method="post">
+                
+                    <p>
+                      <label for="days" ><span>Number of Days<span class="required">*</span></span>
+                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" />
+                      </label>
+                      <label>
+                        <input type="submit" value="Apply" />
+                      </label>
+                      
+                    </p>
+                    <p>&nbsp; </p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                  </form>
+                </div>
+                
+                <div id="content_panel">
+                
+                  <div id="heading">Set Number of Leave that can be taken in  a year<hr size="2" color="#FFFFFF" />
+              </div>
+                  <form action="admin/add_staff.php" method="post">
+                
+                    <p>
+                      <label for="days" ><span>Number of Days<span class="required">*</span></span>
+                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" />
+                      </label>
+                      <label>
+                        <input type="submit" value="Set" />
+                      </label>
+                      
+                    </p>
+                    <p>&nbsp; </p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                  </form>
+                </div>
+              <div id="content_panel">
+                
+                  <div id="heading">Change Admin<hr size="2" color="#FFFFFF" />
+              </div>
+                  <form action="admin/add_staff.php" method="post">
+                
+                    <p>
+                      <label for="address" ><span>New Admin Address<span class="required">*</span></span>
+                        <input type="text" name="address" id="address" placeholder="Address" required="required" />
+                      </label>
+                      <label>
+                        <input type="submit" value="Register" />
+                      </label>
+                      
+                    </p>
+                    <p>&nbsp; </p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                  </form>
+                </div>
+              <div id="footer">
+                <p><br />&copy; Unsullied, All Rights Reserved.</p>
+              </div>
+            </div>
+        </div>
+      );
+    }
   }
 }
 
