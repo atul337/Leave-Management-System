@@ -134,14 +134,3 @@ library Sf{
 
 }
 */
-<<<<<<< HEAD:contracts/Leave.sol
-=======
-
-/*Important bugs to be addressed
-1)There must be an option to deregister.
-2) leave extension option must be there which needs approval of admin
-3)There must be a cap to the maximum number of days of leave that can be taken in one go.
-4)need to change the visibilities of various functions
-
-*/
->>>>>>> b7db67bb35a641b288e20e1451f63176b2b326de:contracts/leave.sol
