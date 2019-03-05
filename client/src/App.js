@@ -72,7 +72,7 @@ class App extends Component {
 
     const { accounts, contract } = this.state;
 
-    if(window.confirm("Are you sure?")){
+    if(window.confirm("Register Admin?")){
       await contract.methods.makeadmin(this.state.Name, this.state.EID).send({ from: accounts[0] });
       window.location.reload();
     }
