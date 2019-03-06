@@ -17,7 +17,7 @@ contract Leave
         uint64 leave_count;//number of leaves taken till date
     }
 
-    uint64 max_leave;//maximum number of leaves that can be taken in a year
+    uint64 max_leave = 20;//maximum number of leaves that can be taken in a year
     
     address public admin;//the person who can register someone into the database
     
