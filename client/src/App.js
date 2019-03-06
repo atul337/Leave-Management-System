@@ -325,7 +325,8 @@ class App extends Component {
                 
                     <p>
                       <label for="days" ><span>Number of Days<span class="required">*</span></span>
-                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onchange={this.handleMaxleave}/>
+                      <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleMaxleave}/>
+
                       </label>
                       <label>
                         <input type="submit" value="Set" />
