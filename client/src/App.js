@@ -8,11 +8,15 @@ class App extends Component {
   state = {
     adminDone : false, 
     Name: '', 
-    EID: '', 
+    EmpID: '', 
+    EmpAddress:'',
     web3: null, 
     accounts: null, 
     contract: null,
-    adminAdress: '' 
+    leaveDays:'',
+    adminAdress: '' ,
+    newadminAdress:'',
+    maxleave:''
   };
 
   componentDidMount = async () => {
@@ -61,19 +65,38 @@ class App extends Component {
   handleName = async (event) => {
     this.setState({Name: event.target.value});
   }
-  handleEID = async (event) => {
-    this.setState({EID: event.target.value});
+  handleEmpID = async (event) => {
+    this.setState({EmpID: event.target.value});
+  }
+  handleEmpAddress = async (event) => {
+    this.setState({EmpAddress: event.target.value});
   }
 
   handleSetAdmin = async (event) => {
+    // alert('A name was submitted: ' + this.state.value);
+    event.preventDefault();
+
+    const { accounts, contract } = this.state;
+
+    if(window.confirm("Register Admin?")){
+      await contract.methods.makeadmin(this.state.Name, this.state.EmpID).send({ from: accounts[0] });
+      window.location.reload();
+    }
+    else {
+      window.location.reload();
+    }
+  }
+  //added by amitpriyankar
+  handleRegisterEmp = async (event) => {
     // alert('A name was submitted: ' + this.state.value);
 
     event.preventDefault();
 
     const { accounts, contract } = this.state;
 
-    if(window.confirm("Register Admin?")){
-      await contract.methods.makeadmin(this.state.Name, this.state.EID).send({ from: accounts[0] });
+    if(window.confirm("Register Employee?")){
+      // console.log(this.state);
+      await contract.methods.register(this.state.EmpAddress,this.state.Name, this.state.EmpID).send({ from: accounts[0] });
       window.location.reload();
     }
     else {
@@ -82,7 +105,80 @@ class App extends Component {
     
   }
 
+  handleleaveDays = async (event) => {
+    this.setState({leaveDays: event.target.value});
+    // console.log(this);
+  }
+ 
+  handleAskLeave = async (event) => {
+    // alert('A name was submitted: ' + this.state.value);
 
+    event.preventDefault();
+
+    const { accounts, contract } = this.state;
+
+    if(window.confirm("Apply for leave")){
+     
+      await contract.methods.ask_leave(this.state.leaveDays).send({ from: accounts[0] });
+      window.location.reload();
+    }
+    else {
+      window.location.reload();
+    }
+    
+  }
+
+  handleNewAdmin = async (event) => {
+    this.setState({newadminAdress:event.target.value});
+  }
+
+  handleAdminChange = async (event) => {
+    // alert('A name was submitted: ' + this.state.value);
+
+    event.preventDefault();
+
+    const { accounts, contract } = this.state;
+
+    if(window.confirm("Change Admin?")){
+     
+      await contract.methods.changeadmin(this.state.newadminAdress).send({ from: accounts[0] });
+      window.location.reload();
+    }
+    else {
+      window.location.reload();
+    }
+    
+  }
+  handleMaxleave = async (event) => {
+    this.setState({maxleave: event.target.value});
+  }
+
+  handleSetMaxleave = async (event) => {
+    event.preventDefault();
+
+    const { accounts, contract } = this.state;
+
+    if(window.confirm("Set max leave?")){
+     
+      await contract.methods.setmaxleave(this.state.maxleave).send({ from: accounts[0] });
+      window.location.reload();
+    }
+    else {
+      window.location.reload();
+    }
+    
+  }
+
+  handleFetchDetails = async (event) => {
+    event.preventDefault();
+
+    const { accounts, contract } = this.state;
+    // console.log(this.state.EmpID);
+    const responsee = await contract.methods.details(this.state.EmpID).call();
+    console.log(responsee);
+    alert("Name: "+responsee[0]+"\nId: "+responsee[1]+"\nLeave Count: "+responsee[2]);
+    
+  }
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
@@ -106,7 +202,7 @@ class App extends Component {
                     <input type="text" placeholder="Name" required="required" onChange = {this.handleName} />
                   </label>
                   <label for="id"><span>Employee ID<span class="required">*</span></span>
-                    <input type="text" placeholder="Employee ID" required="required" onChange = {this.handleEID}  />
+                    <input type="text" placeholder="Employee ID" required="required" onChange = {this.handleEmpID}  />
                   </label>
                   <label>
                     <input type="submit" value="Register" />
@@ -143,17 +239,17 @@ class App extends Component {
                 
                 <div id="heading">Register Employee<hr size="2" color="#FFFFFF" />
             </div>
-                <form action="admin/add_staff.php" method="post">
+                <form onSubmit={this.handleRegisterEmp}>
               
                   <p>
                     <label for="address" ><span>Address <span class="required">*</span></span>
-                      <input type="text" name="address" id="address" placeholder="Address" required="required" />
+                      <input type="text" name="address" id="address" placeholder="Address" required="required" onChange={this.handleEmpAddress}/>
                     </label>
                     <label for="full_name" ><span>Name <span class="required">*</span></span>
-                      <input type="text" name="full_name" id="full_name" placeholder="Name" required="required"/>
+                      <input type="text" name="full_name" id="full_name" placeholder="Name" required="required" onChange={this.handleName}/>
                     </label>
                     <label for="id"><span>Employee ID<span class="required">*</span></span>
-                      <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required"/>
+                      <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required" onChange={this.handleEmpID}/>
                     </label>
                     <label>
                       <input type="submit" value="Register" />
@@ -172,14 +268,14 @@ class App extends Component {
               
               <div id="content_panel">
                 
-                  <div id="heading">Fetch Details<hr size="2" color="#FFFFFF" />
+              <div id="heading">Fetch Details<hr size="2" color="#FFFFFF" />
               </div>
-                  <form action="admin/add_staff.php" method="post">
+                  <form onSubmit={this.handleFetchDetails}>
                 
                     <p>
                       
                       <label for="id"><span>Employee ID<span class="required">*</span></span>
-                        <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required"/>
+                        <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required" onChange={this.handleEmpID}/>
                       </label>
                       <label>
                         <input type="submit" value="Fetch" />
@@ -200,11 +296,11 @@ class App extends Component {
                 
                   <div id="heading">Apply Leave<hr size="2" color="#FFFFFF" />
               </div>
-                  <form action="admin/add_staff.php" method="post">
+                  <form onSubmit={this.handleAskLeave}>
                 
                     <p>
                       <label for="days" ><span>Number of Days<span class="required">*</span></span>
-                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" />
+                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleleaveDays}/>
                       </label>
                       <label>
                         <input type="submit" value="Apply" />
@@ -225,11 +321,11 @@ class App extends Component {
                 
                   <div id="heading">Set Number of Leave that can be taken in  a year<hr size="2" color="#FFFFFF" />
               </div>
-                  <form action="admin/add_staff.php" method="post">
+                  <form onSubmit={this.handleSetMaxleave}>
                 
                     <p>
                       <label for="days" ><span>Number of Days<span class="required">*</span></span>
-                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" />
+                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onchange={this.handleMaxleave}/>
                       </label>
                       <label>
                         <input type="submit" value="Set" />
@@ -249,11 +345,11 @@ class App extends Component {
                 
                   <div id="heading">Change Admin<hr size="2" color="#FFFFFF" />
               </div>
-                  <form action="admin/add_staff.php" method="post">
+                  <form onSubmit={this.handleAdminChange}>
                 
                     <p>
                       <label for="address" ><span>New Admin Address<span class="required">*</span></span>
-                        <input type="text" name="address" id="address" placeholder="Address" required="required" />
+                        <input type="text" name="address" id="address" placeholder="Address" required="required" onChange={this.handleNewAdmin}/>
                       </label>
                       <label>
                         <input type="submit" value="Register" />
@@ -273,6 +369,47 @@ class App extends Component {
                 <p><br />&copy; Unsullied, All Rights Reserved.</p>
               </div>
             </div>
+        </div>
+      );
+    }
+    else {
+      return(
+        <div className="App">
+            <div id="container">
+              <div id="header">
+                <div id="title">Leave Management System<br></br> Employee Page</div>
+              
+              <div id="content_panel">
+                
+                  <div id="heading">Apply Leave<hr size="2" color="#FFFFFF" />
+              </div>
+              <div id = "temp" class = "required">
+              </div>
+                  <form onSubmit={this.handleAskLeave}>
+                    
+                    <p>
+                      <label for="days" ><span>Number of Days<span class="required">*</span></span>
+                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleleaveDays}/>
+                      </label>
+                      <label>
+                        <input type="submit" value="Apply" />
+                      </label>
+                      
+                    </p>
+                    <p>&nbsp; </p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                    <p>&nbsp;</p>
+                  </form>
+                </div>
+              <div id="footer">
+                <p><br />&copy; Unsullied, All Rights Reserved.</p>
+              </div>
+            </div>
+        </div>
         </div>
       );
     }

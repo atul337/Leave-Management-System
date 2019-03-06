@@ -76,6 +76,7 @@ contract Leave
     function ask_leave(uint64 count_days) public returns (int8 reply)//function for person to ask leave
     {
         require(registered[msg.sender]==true);
+        require((person[msg.sender].leave_count + count_days) <= max_leave);
         address temp;
         temp=msg.sender;
     
