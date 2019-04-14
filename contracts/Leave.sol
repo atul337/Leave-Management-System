@@ -17,7 +17,7 @@ contract Leave
         uint64 leave_count;//number of leaves taken till date
     }
 
-    uint64 max_leave = 20;//maximum number of leaves that can be taken in a year
+    uint64 public max_leave = 20;//maximum number of leaves that can be taken in a year
     
     address public admin;//the person who can register someone into the database
     
@@ -100,6 +100,16 @@ contract Leave
         id=person[temp].id;
         leave_count=person[temp].leave_count;
     }
+
+    function curdetails(address temp) view public returns (string memory name, string memory id, uint64 leave_count)
+    {
+        // require(msg.sender==admin);
+        // address temp=msg.sender;`
+        name=person[temp].name;
+        id=person[temp].id;
+        leave_count=person[temp].leave_count;
+    }
+
 
     function changeadmin(address newadd) public
     {
