@@ -231,3 +231,9 @@ body {
 {
 	text-align:left;
 }
+
+#special {
+	font-size: 15px;
+	text-align: left;
+	padding-left: 30px;
+}

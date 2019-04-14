@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import LeaveContract from "./contracts/Leave.json";
 import getWeb3 from "./utils/getWeb3";
 
-import "./App.css";
-
 class App extends Component {
   state = {
     adminDone : false, 
@@ -16,7 +14,11 @@ class App extends Component {
     leaveDays:'',
     adminAdress: '' ,
     newadminAdress:'',
-    maxleave:''
+    maxleave:'',
+    curName: '',
+    curID:'',
+    leavesRemain:'',
+    curmaxleave:''
   };
 
   componentDidMount = async () => {
@@ -48,7 +50,7 @@ class App extends Component {
   };
 
   runExample = async () => {
-    const {contract } = this.state;
+    const {accounts,contract } = this.state;
 
     // Stores a given value, 5 by default.
     // await contract.methods.set(5).send({ from: accounts[0] });
@@ -56,10 +58,15 @@ class App extends Component {
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.admindone().call();
     const adminadd = await contract.methods.admin().call();
+    const tempdetails = await contract.methods.curdetails(accounts[0]).call();
+    const tempml = await contract.methods.max_leave().call();
 
     // Update state with the result.
-    this.setState({ adminDone: response, adminAdress: adminadd });
+    this.setState({ adminDone: response, adminAdress: adminadd, curmaxleave : tempml});
     // this.handleChange = this.handleChange.bind(this);
+    this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
+
+
   };
 
   handleName = async (event) => {
@@ -172,7 +179,7 @@ class App extends Component {
   handleFetchDetails = async (event) => {
     event.preventDefault();
 
-    const { accounts, contract } = this.state;
+    const {contract} = this.state;
     // console.log(this.state.EmpID);
     const responsee = await contract.methods.details(this.state.EmpID).call();
     console.log(responsee);
@@ -181,7 +188,7 @@ class App extends Component {
   }
   render() {
     if (!this.state.web3) {
-      return <div>Loading Web3, accounts, and contract...</div>;
+      return ("Waiting for injected web3!");
     }
     
     else if(!this.state.adminDone){ 
@@ -220,7 +227,7 @@ class App extends Component {
             </div>
             
             <div id="footer">
-              <p><br />&copy; Unsullied, All Rights Reserved.</p>
+              <p><br />&copy; All Rights Reserved.</p>
             </div>
           </div>
         </div>
@@ -367,7 +374,7 @@ class App extends Component {
                   </form>
                 </div>
               <div id="footer">
-                <p><br />&copy; Unsullied, All Rights Reserved.</p>
+                <p><br />&copy; All Rights Reserved.</p>
               </div>
             </div>
         </div>
@@ -384,12 +391,19 @@ class App extends Component {
                 
                   <div id="heading">Apply Leave<hr size="2" color="#FFFFFF" />
               </div>
-              <div id = "temp" class = "required">
-              </div>
+              <div id = "special">
+              <p>Welcome  <b>{this.state.curName}</b><br></br>
+                 Employee ID &nbsp;: <b>{this.state.curID} </b><br ></br>
+                 Leaves remaining : <b>{this.state.leavesRemain}</b></p>
+                </div>
+               {/* <div style="text-align: left;margin-left: 30px;padding-top:8px"><span ><b>Name of Emp. : </b></span><span style="padding-left:25px">{this.state.curName}</span></div>
+                <div style="text-align: left;margin-left: 30px;padding-top:8px"><span><b>ID of Emp : </b></span><span style="padding-left:50px">{this.state.curID}</span></div>
+                <div style="text-align: left;margin-left: 30px;padding-top:8px"><span><b>No of leave days available : </b></span><span style="padding-left:30px">{this.state.leavesRemain}</span></div> */}
                   <form onSubmit={this.handleAskLeave}>
                     
                     <p>
-                      <label for="days" ><span>Number of Days<span class="required">*</span></span>
+                      
+                      <label for="days" ><span>Apply for leave<span class="required">*</span></span>
                         <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleleaveDays}/>
                       </label>
                       <label>
@@ -407,7 +421,7 @@ class App extends Component {
                   </form>
                 </div>
               <div id="footer">
-                <p><br />&copy; Unsullied, All Rights Reserved.</p>
+                <p><br />&copy; All Rights Reserved.</p>
               </div>
             </div>
         </div>
