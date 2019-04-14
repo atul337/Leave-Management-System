@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import LeaveContract from "./contracts/Leave.json";
 import getWeb3 from "./utils/getWeb3";
+import InitialPage from "./components/InitialPage"
+import AdminPage from "./components/AdminPage"
+import UserPage from "./components/UserPage"
 
 class App extends Component {
   state = {
@@ -79,60 +82,9 @@ class App extends Component {
     this.setState({EmpAddress: event.target.value});
   }
 
-  handleSetAdmin = async (event) => {
-    // alert('A name was submitted: ' + this.state.value);
-    event.preventDefault();
-
-    const { accounts, contract } = this.state;
-
-    if(window.confirm("Register Admin?")){
-      await contract.methods.makeadmin(this.state.Name, this.state.EmpID).send({ from: accounts[0] });
-      window.location.reload();
-    }
-    else {
-      window.location.reload();
-    }
-  }
-  //added by amitpriyankar
-  handleRegisterEmp = async (event) => {
-    // alert('A name was submitted: ' + this.state.value);
-
-    event.preventDefault();
-
-    const { accounts, contract } = this.state;
-
-    if(window.confirm("Register Employee?")){
-      // console.log(this.state);
-      await contract.methods.register(this.state.EmpAddress,this.state.Name, this.state.EmpID).send({ from: accounts[0] });
-      window.location.reload();
-    }
-    else {
-      window.location.reload();
-    }
-    
-  }
-
   handleleaveDays = async (event) => {
     this.setState({leaveDays: event.target.value});
     // console.log(this);
-  }
- 
-  handleAskLeave = async (event) => {
-    // alert('A name was submitted: ' + this.state.value);
-
-    event.preventDefault();
-
-    const { accounts, contract } = this.state;
-
-    if(window.confirm("Apply for leave")){
-     
-      await contract.methods.ask_leave(this.state.leaveDays).send({ from: accounts[0] });
-      window.location.reload();
-    }
-    else {
-      window.location.reload();
-    }
-    
   }
 
   handleNewAdmin = async (event) => {
@@ -192,193 +144,11 @@ class App extends Component {
     }
     
     else if(!this.state.adminDone){ 
-      return(
-        <div className="App">
-                  <div id="container">
-            <div id="header">
-              <div id="title">Leave Management System<br></br> Initial Page</div>
-            </div>
-            
-            <div id="content_panel">
-              
-              <div id="heading">Register Admin<hr size="2" color="#FFFFFF" /> 
-          </div>
-              <form onSubmit = {this.handleSetAdmin}>
-                <p>
-                  <label for="full_name" ><span>Name <span class="required">*</span></span>
-                    <input type="text" placeholder="Name" required="required" onChange = {this.handleName} />
-                  </label>
-                  <label for="id"><span>Employee ID<span class="required">*</span></span>
-                    <input type="text" placeholder="Employee ID" required="required" onChange = {this.handleEmpID}  />
-                  </label>
-                  <label>
-                    <input type="submit" value="Register" />
-                  </label>
-                  
-                </p>
-                <p>&nbsp; </p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-                <p>&nbsp;</p>
-              </form>
-            </div>
-            
-            <div id="footer">
-              <p><br />&copy; All Rights Reserved.</p>
-            </div>
-          </div>
-        </div>
-        
-      );
+      return( <InitialPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
-
+    // eslint-disable-next-line
     else if(this.state.accounts[0] == this.state.adminAdress ){
-      return(
-        <div className = "App">
-          <div id="container">
-              <div id="header">
-                <div id="title">Leave Management System<br></br>Admin Page</div>
-              </div>
-              <div id="content_panel">
-                
-                <div id="heading">Register Employee<hr size="2" color="#FFFFFF" />
-            </div>
-                <form onSubmit={this.handleRegisterEmp}>
-              
-                  <p>
-                    <label for="address" ><span>Address <span class="required">*</span></span>
-                      <input type="text" name="address" id="address" placeholder="Address" required="required" onChange={this.handleEmpAddress}/>
-                    </label>
-                    <label for="full_name" ><span>Name <span class="required">*</span></span>
-                      <input type="text" name="full_name" id="full_name" placeholder="Name" required="required" onChange={this.handleName}/>
-                    </label>
-                    <label for="id"><span>Employee ID<span class="required">*</span></span>
-                      <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required" onChange={this.handleEmpID}/>
-                    </label>
-                    <label>
-                      <input type="submit" value="Register" />
-                    </label>
-                    
-                  </p>
-                  <p>&nbsp; </p>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                  <p>&nbsp;</p>
-                </form>
-              </div>
-              
-              <div id="content_panel">
-                
-              <div id="heading">Fetch Details<hr size="2" color="#FFFFFF" />
-              </div>
-                  <form onSubmit={this.handleFetchDetails}>
-                
-                    <p>
-                      
-                      <label for="id"><span>Employee ID<span class="required">*</span></span>
-                        <input type="text" name="id" id="emp_id" placeholder="Employee ID" required="required" onChange={this.handleEmpID}/>
-                      </label>
-                      <label>
-                        <input type="submit" value="Fetch" />
-                      </label>
-                      
-                    </p>
-                    <p>&nbsp; </p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                  </form>
-                </div>
-                
-              <div id="content_panel">
-                
-                  <div id="heading">Apply Leave<hr size="2" color="#FFFFFF" />
-              </div>
-                  <form onSubmit={this.handleAskLeave}>
-                
-                    <p>
-                      <label for="days" ><span>Number of Days<span class="required">*</span></span>
-                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleleaveDays}/>
-                      </label>
-                      <label>
-                        <input type="submit" value="Apply" />
-                      </label>
-                      
-                    </p>
-                    <p>&nbsp; </p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                  </form>
-                </div>
-                
-                <div id="content_panel">
-                
-                  <div id="heading">Set Number of Leave that can be taken in  a year<hr size="2" color="#FFFFFF" />
-              </div>
-                  <form onSubmit={this.handleSetMaxleave}>
-                
-                    <p>
-                      <label for="days" ><span>Number of Days<span class="required">*</span></span>
-                      <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleMaxleave}/>
-
-                      </label>
-                      <label>
-                        <input type="submit" value="Set" />
-                      </label>
-                      
-                    </p>
-                    <p>&nbsp; </p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                  </form>
-                </div>
-              <div id="content_panel">
-                
-                  <div id="heading">Change Admin<hr size="2" color="#FFFFFF" />
-              </div>
-                  <form onSubmit={this.handleAdminChange}>
-                
-                    <p>
-                      <label for="address" ><span>New Admin Address<span class="required">*</span></span>
-                        <input type="text" name="address" id="address" placeholder="Address" required="required" onChange={this.handleNewAdmin}/>
-                      </label>
-                      <label>
-                        <input type="submit" value="Register" />
-                      </label>
-                      
-                    </p>
-                    <p>&nbsp; </p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                  </form>
-                </div>
-              <div id="footer">
-                <p><br />&copy; All Rights Reserved.</p>
-              </div>
-            </div>
-        </div>
-      );
+      return(<AdminPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
     else {
       return(
