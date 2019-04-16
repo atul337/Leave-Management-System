@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import "./css/style.css"
+import "./css/admin.css"
 
 class InitialPage extends Component {
 
@@ -58,56 +58,102 @@ class InitialPage extends Component {
 
     render() {
         return (
-            <div id = "main">
-            
-                <nav class="navbar navbar-light bg-light  text-center">
-                    <span class="navbar-brand mb-0 h1">Leave Management System - Admin Page</span>
-                </nav>
-                <div class="signup-form">
-                    <form  onSubmit = {this.handleRegisterEmp}>
-                    <h2>Register Employee</h2>
-                        <div class="form-group">
-                    <label>Address</label>
-                        <input type="text" class="form-control" name="address" required="required"/>
-                        </div>
-                        <div class="form-group">
-                    <label>Name</label>
-                        <input type="text" class="form-control" name="name" required="required"/>
-                        </div>
-                        <div class="form-group">
-                    <label>Employee Id</label>
-                        <input type="text" class="form-control" name="id" required="required"/>
-                        </div>
-                    <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block btn-lg">Register</button>
-                        </div>
-                    </form>
-                </div>
+            <div id = "main">  
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-offset-1 col-md-10">
+                            <h2 class=" text-white">Welcome Admin!</h2>
+                            <span class="loader pull-right"><span class="loader-inner"></span></span>
+                            <br></br>
+                            
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-                <div class="signup-form">
-                    <form  onSubmit = {this.handleFetchDetails}>
-                    <h2>Fetch Details</h2>
-                        <div class="form-group">
-                    <label>Employee Id</label>
-                        <input type="text" class="form-control" name="id" required="required"/>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseThree">
+                                                Register New Employee
+                                                <span> </span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            <div class="signup-form">
+                                                <form  onSubmit = {this.handleRegisterEmp}>
+                                                    <div class="form-group">
+                                                <label>Address</label>
+                                                    <input type="text" class="form-control" name="address" required="required"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                <label>Name</label>
+                                                    <input type="text" class="form-control" name="name" required="required"/>
+                                                    </div>
+                                                    <div class="form-group">
+                                                <label>Employee Id</label>
+                                                    <input type="text" class="form-control" name="id" required="required"/>
+                                                    </div>
+                                                <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Register</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseThree">
+                                                Fetch Details
+                                                <span> </span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            <div class="signup-form">
+                                                <form  onSubmit = {this.handleFetchDetails}>
+                                                    <div class="form-group">
+                                                <label>Employee Id</label>
+                                                    <input type="text" class="form-control" name="id" required="required"/>
+                                                    </div>
+                                                <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Fetch</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                Apply for leave
+                                                <span> </span>
+                                            </a>
+                                        </h4>
+                                    </div>
+                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            <div class="signup-form">
+                                                <form  onSubmit = {this.handleAskLeave}>
+                                                    <div class="form-group">
+                                                <label>No. of days  </label>
+                                                    <input type="number" class="form-control" name="days" required="required"/>
+                                                    </div>
+                                                <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block btn-lg">Fetch</button>
-                        </div>
-                    </form>
-                </div>
-               
-                <div class="signup-form">
-                    <form  onSubmit = {this.handleAskLeave}>
-                    <h2>Apply for Leave</h2>
-                        <div class="form-group">
-                    <label>No. of days  </label>
-                        <input type="number" class="form-control" name="days" required="required"/>
-                        </div>
-                    <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         );

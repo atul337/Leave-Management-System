@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import "./css/style.css"
+import "./css/initial.css"
 
 class InitialPage extends Component {
 
@@ -30,9 +30,6 @@ class InitialPage extends Component {
     render() {
         return (
             <div class="signup-form">
-                <nav class="navbar navbar-light bg-light  text-center">
-                    <span class="navbar-brand mb-0 h1">Leave Management System - Initial Page</span>
-                </nav>
                 <form onSubmit = {this.handleSetAdmin}>
                 <h2>Register Admin</h2>
                     <div class="form-group">
