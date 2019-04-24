@@ -27,17 +27,7 @@ a:hover, a:focus{
   border: none;
 }
 .panel-heading a{
-  color:black !important;
-  display: block;
-  border:none;
-  padding:20px 35px 20px;
-  font-size: 20px;
-  background-color:#fff;
-  font-weight:600;
-  position: relative;
-  color:#fff;
-  box-shadow:none;
-  transition:all 0.1s ease 0;
+
 }
 .panel-heading a:after, .panel-heading a.collapsed:after{
   content: "\f068";
@@ -138,3 +128,21 @@ a:hover, a:focus{
     height: 0%;
   }
 }
+#temp
+{
+  color:black !important;
+  display: block;
+  border:none;
+  padding:20px 35px 20px;
+  font-size: 20px;
+  background-color:#fff;
+  font-weight:600;
+  position: relative;
+  color:#fff;
+  box-shadow:none;
+}
+.button-custom
+{
+  bordor-radius: 1px;
+}
+

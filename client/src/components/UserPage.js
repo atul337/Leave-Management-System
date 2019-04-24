@@ -19,7 +19,13 @@ class InitialPage extends Component {
             <div class="container">
                 <div class="row">
                     <div class="col-md-offset-1 col-md-10">
-                        <h2 class=" text-white">Welcome <span>UserName</span>!</h2>
+                        <h2 class=" text-white">Welcome <span>UserName</span>!
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Leaves Remaining:<span>10</span></h2>
+                        
 
                         <span class="loader pull-right"><span class="loader-inner"></span></span>
                         <br></br>
