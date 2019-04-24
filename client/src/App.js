@@ -151,52 +151,7 @@ class App extends Component {
       return(<AdminPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
     else {
-      return(
-        <div className="App">
-            <div id="container">
-              <div id="header">
-                <div id="title">Leave Management System<br></br> Employee Page</div>
-              
-              <div id="content_panel">
-                
-                  <div id="heading">Apply Leave<hr size="2" color="#FFFFFF" />
-              </div>
-              <div id = "special">
-              <p>Welcome  <b>{this.state.curName}</b><br></br>
-                 Employee ID &nbsp;: <b>{this.state.curID} </b><br ></br>
-                 Leaves remaining : <b>{this.state.leavesRemain}</b></p>
-                </div>
-               {/* <div style="text-align: left;margin-left: 30px;padding-top:8px"><span ><b>Name of Emp. : </b></span><span style="padding-left:25px">{this.state.curName}</span></div>
-                <div style="text-align: left;margin-left: 30px;padding-top:8px"><span><b>ID of Emp : </b></span><span style="padding-left:50px">{this.state.curID}</span></div>
-                <div style="text-align: left;margin-left: 30px;padding-top:8px"><span><b>No of leave days available : </b></span><span style="padding-left:30px">{this.state.leavesRemain}</span></div> */}
-                  <form onSubmit={this.handleAskLeave}>
-                    
-                    <p>
-                      
-                      <label for="days" ><span>Apply for leave<span class="required">*</span></span>
-                        <input type="text" name="days" id="days" placeholder="Number of Days" required="required" onChange={this.handleleaveDays}/>
-                      </label>
-                      <label>
-                        <input type="submit" value="Apply" />
-                      </label>
-                      
-                    </p>
-                    <p>&nbsp; </p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                    <p>&nbsp;</p>
-                  </form>
-                </div>
-              <div id="footer">
-                <p><br />&copy; All Rights Reserved.</p>
-              </div>
-            </div>
-        </div>
-        </div>
-      );
+      return(<UserPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
   }
 }
