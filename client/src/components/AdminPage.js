@@ -7,7 +7,7 @@ class InitialPage extends Component {
     state = {
         accounts: null,
         contract: null,
-        pending: null
+        pending: []
     };
 
     componentDidMount = async () => {
@@ -20,21 +20,22 @@ class InitialPage extends Component {
         
         for(var i = 0; i < temp[1].length; ++i){
             let userMap = await this.state.contract.methods.users(temp[2][i]).call();
-            var oo = {
-                leaveID: temp[1][i],
-                name: userMap.name,
-                eID: userMap.id,
-                days: temp[3][i],
-            };
+            let oo = [
+                temp[1][i],
+                userMap.name,
+                userMap.id,
+                temp[3][i],
+            ];
             tempArray.push(oo);
         }
         await this.setState({pending: tempArray});
-
         console.log(this.state.pending);
     };
 
+
     handleRegisterEmp = async (event) => {
         event.preventDefault();
+        this.renderTable = this.render.bind(this);
 
         const { accounts, contract } = this.state;
 
@@ -174,7 +175,7 @@ class InitialPage extends Component {
                                 </div>
 
                                 <div class="panel panel-default">
-                                <div id="temp">
+                                    <div id="temp">
                                         <h4 >
                                             
                                                 <b>Pending Leave Requests</b>
@@ -195,24 +196,29 @@ class InitialPage extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>faba;khf</td>
-                                                <td>havana ka booba</td>
-                                                <td>123
+                                            {this.state.pending.map(value => 
+                                                <tr>
+                                                    <td>
+                                                        {value[0]}
                                                     </td>
-                                                <td>5
+                                                    <td>
+                                                        {value[1]}
                                                     </td>
-                                                <td><div class="w3-section">
-                                                    <button class="btn btn-success btn-small">Accept</button><span>&nbsp;</span>
-                                                    <button class="btn btn-danger btn-small">Decline</button>
-                                                </div></td>
-
-                                            </tr>
+                                                    <td>
+                                                        {value[2]}
+                                                    </td>
+                                                    <td>
+                                                        {value[3]}
+                                                    </td>
+                                                    <td><div class="w3-section">
+                                                        <button class="btn btn-success btn-small">Accept</button><span>&nbsp;</span>
+                                                        <button class="btn btn-danger btn-small">Decline</button>
+                                                    </div></td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
-
                                 </div>
-
                     </div>
                 </div>
             </div>
