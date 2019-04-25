@@ -6,11 +6,14 @@ class InitialPage extends Component {
 
     state = {
         accounts: null,
-        contract: null
+        contract: null,
+        remainingLeaves: 0
     };
 
     componentDidMount = async () => {
-        this.setState({accounts: this.props.accounts, contract: this.props.contract});
+        await this.setState({accounts: this.props.accounts, contract: this.props.contract});
+        let userMap = await this.state.contract.methods.users(this.state.accounts[0]).call();
+        this.setState({remainingLeaves: this.props.maxleaves - userMap.days_count});
     };
 
     handleAskLeave = async (event) => {
@@ -39,7 +42,7 @@ class InitialPage extends Component {
                     <div class="col-md-offset-1 col-md-10">
                         <h2 class=" text-white">Welcome <span>UserName</span>!
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        Leaves Remaining:<span>10</span></h2>
+                        Leaves Remaining:<span>{this.state.remainingLeaves}</span></h2>
                         
 
                         <span class="loader pull-right"><span class="loader-inner"></span></span>
