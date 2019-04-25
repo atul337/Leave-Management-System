@@ -53,21 +53,18 @@ class App extends Component {
   };
 
   runExample = async () => {
-    const {accounts,contract } = this.state;
-
-    // Stores a given value, 5 by default.
-    // await contract.methods.set(5).send({ from: accounts[0] });
+    const { contract } = this.state;
 
     // Get the value from the contract to prove it worked.
-    const response = await contract.methods.admindone().call();
+    const response = await contract.methods.adminDone().call();
     const adminadd = await contract.methods.admin().call();
-    const tempdetails = await contract.methods.curdetails(accounts[0]).call();
+    // const tempdetails = await contract.methods.curdetails(accounts[0]).call();
     const tempml = await contract.methods.max_leave().call();
 
     // Update state with the result.
     this.setState({ adminDone: response, adminAdress: adminadd, curmaxleave : tempml});
     // this.handleChange = this.handleChange.bind(this);
-    this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
+    // this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
 
 
   };

@@ -11,9 +11,11 @@ class InitialPage extends Component {
     };
 
     componentDidMount = async () => {
-        this.setState({ accounts: this.props.accounts, contract: this.props.contract });
-        const pending = await contrat.methods.toApprove().call();
-        thie.setState({pending: pending});
+        await this.setState({ accounts: this.props.accounts, contract: this.props.contract });
+        
+        const { contract } = this.state;
+        const temp = await contract.methods.toApprove().call();
+        console.log(temp);
     };
 
     handleRegisterEmp = async (event) => {
@@ -61,6 +63,8 @@ class InitialPage extends Component {
     }
 
     render() {
+        const { contract } = this.state;
+        
         return (
             <div id="main">
                 <div class="container">
@@ -191,35 +195,10 @@ class InitialPage extends Component {
                                                 </div></td>
 
                                             </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>4</td>
-                                                <td class="statusCancelled">&#10008; Cancelled</td>
-                                                <td>N/A</td>
-
-                                            </tr>
-
-                                            <tr>
-                                                <td>3</td>
-                                                <td>5</td>
-                                                <td class="statusApproved">&#10004; Approved</td>
-                                                <td>N/A</td>
-
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>4</td>
-                                                <td class="statusApproved">&#10004; Approved</td>
-                                                <td>N/A</td>
-
-                                            </tr>
                                         </tbody>
                                     </table>
 
                                 </div>
-                        
-
-
 
                     </div>
                 </div>
