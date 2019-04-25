@@ -6,7 +6,8 @@ class InitialPage extends Component {
 
     state = {
         accounts: null,
-        contract: null
+        contract: null,
+        pending: null
     };
 
     componentDidMount = async () => {
@@ -35,7 +36,8 @@ class InitialPage extends Component {
         // console.log(this.state.EmpID);
         const responsee = await contract.methods.details(event.target.id.value).call();
         console.log(responsee);
-        alert("Name: " + responsee[0] + "\nId: " + responsee[1] + "\nLeave Count: " + responsee[2]);
+        if(responsee[0])alert("Name: " + responsee[1] + "\nLeaves Remaining: " + responsee[2]);
+        else alert("No Employee Found!");
 
     }
     handleAskLeave = async (event) => {

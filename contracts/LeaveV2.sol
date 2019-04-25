@@ -34,6 +34,7 @@ contract Leave
     
     address public admin;//address which will be registered first
     bool public adminDone=false;
+    uint64 public max_leave = 30;//maximum number of leaves that can be taken in a year
 
     mapping(address=>user) public users;
     leavedetail[] public leaves;
@@ -62,8 +63,8 @@ contract Leave
         return true;
     }
 
-
-    function register_admin(string memory nname, string memory idd) public returns (bool)
+    //set admin
+    function makeadmin(string memory nname, string memory idd) public returns (bool)
     {
         if(userExists(msg.sender)||adminDone)return false;
         fetch[idd]=admin;
@@ -80,7 +81,8 @@ contract Leave
         return true;
     }
 
-    function register_user(address useradd, string memory nname, string memory idd) public returns (bool)
+    //register new user
+    function register(address useradd, string memory nname, string memory idd) public returns (bool)
     {
         if(msg.sender!=admin||userExists(useradd)||!adminDone)return false;
         fetch[idd]=useradd;
@@ -94,10 +96,11 @@ contract Leave
         });
     }
 
-    function applyLeave(uint no_of_days) public returns (bool)
+    function ask_leave(uint no_of_days) public returns (bool)
     {
         if(userExists(msg.sender)!=true)return false;
         require(userExists(msg.sender)==true);
+        require(max_leave - users[msg.sender].days_count > 0);
         
         leavedetail memory temp;
         temp.applicant=msg.sender;
@@ -114,7 +117,7 @@ contract Leave
         if(msg.sender!=leaves[idx].applicant)return false;
         else if(leaves[idx].status==leavestatus.APPLIED)
         {
-            leaves[idx].status=leavestatus.CANCELED;
+            leaves[idx].status=leavestatus.CANCEL;
             users[msg.sender].days_count-=leaves[idx].dayCount;
             return true;
         }
@@ -197,7 +200,7 @@ contract Leave
         if(size==0)return (false, ttempIndex, ttempDays, tempLeaveStatus);
 		uint ct=0;
 		size = leaves.length;
-		for (uint i=0;i<size;i++){
+		for (uint i=size-1;i>=0;i--){
 			if(leaves[i].applicant == msg.sender)
             {
                 ttempIndex[ct]=i;
@@ -210,17 +213,18 @@ contract Leave
 		return (true, ttempIndex, ttempDays, tempLeaveStatus);
 	}//this can be optimisted by using a mapping which stores the indexes of leaves of all the user
 
-    function fetchDetails(string memory idd) public view returns (bool, string memory, uint, uint)
+    //fetch details of a user
+    function details(string memory idd) public view returns (bool, string memory, uint)
     {
         require(msg.sender==admin);
         string memory tempName;
-        uint leaveCount;
-        uint daysCount;
-        if(userExists(fetch[idd])!=true)return (false, tempName, leaveCount, daysCount);
+        // uint leaveCount;
+        uint daysCount;//number of days remaining
+        if(userExists(fetch[idd])!=true)return (false, tempName, daysCount);
         user memory temp=users[fetch[idd]];
         tempName=temp.name;
-        leaveCount=temp.leave_count;
-        daysCount=temp.days_count;
-        return (true, tempName, leaveCount, daysCount);
+        // leaveCount=temp.leave_count;
+        daysCount= max_leave - temp.days_count;
+        return (true, tempName, daysCount);
     }
 }
