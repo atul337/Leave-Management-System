@@ -63,6 +63,7 @@ a:hover, a:focus{
   position: relative;
 }
 .text-white{
+  font-size: 2em;
   color:white;
   text-transform: uppercase;
 }

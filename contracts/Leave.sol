@@ -98,9 +98,7 @@ contract Leave
 
     function ask_leave(uint no_of_days) public returns (bool)
     {
-        if(userExists(msg.sender)!=true)return false;
-        require(userExists(msg.sender)==true);
-        require(max_leave - users[msg.sender].days_count > 0);
+        require(max_leave - users[msg.sender].days_count >= no_of_days);
         
         leavedetail memory temp;
         temp.applicant=msg.sender;
@@ -190,24 +188,24 @@ contract Leave
 		return (true, leaves[i].applicant, leaves[i].dayCount, leaves[i].status);
 	}
     
-    function getMyLeaves() public view returns (bool, uint[] memory, uint[] memory, leavestatus[] memory) 
+    function getMyLeaves(address add) public view returns (bool, uint[] memory, uint[] memory, leavestatus[] memory) 
     {
-		uint size = users[msg.sender].leave_count;
+		uint size = users[add].leave_count;
         uint[] memory ttempIndex = new uint[](size);
 		uint[] memory ttempDays = new uint[](size);
 		leavestatus[] memory tempLeaveStatus = new leavestatus[](size);
 		
         if(size==0)return (false, ttempIndex, ttempDays, tempLeaveStatus);
-		uint ct=0;
+		uint ct=size-1;
 		size = leaves.length;
-		for (uint i=size-1;i>=0;i--){
-			if(leaves[i].applicant == msg.sender)
+		for (uint i=0;i<size;i++){
+			if(leaves[i].applicant == add)
             {
                 ttempIndex[ct]=i;
 				// tempAddress[ct]=leaves[i].applicant;
 				ttempDays[ct]=leaves[i].dayCount;
 				tempLeaveStatus[ct]=leaves[i].status;
-				ct++;	
+				ct--;	
 			}
 		}
 		return (true, ttempIndex, ttempDays, tempLeaveStatus);

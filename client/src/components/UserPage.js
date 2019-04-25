@@ -5,15 +5,35 @@ import "./css/user.css"
 class InitialPage extends Component {
 
     state = {
+        name:"",
         accounts: null,
         contract: null,
-        remainingLeaves: 0
+        remainingLeaves: 0,
+        history: []
     };
 
     componentDidMount = async () => {
         await this.setState({accounts: this.props.accounts, contract: this.props.contract});
+
         let userMap = await this.state.contract.methods.users(this.state.accounts[0]).call();
-        this.setState({remainingLeaves: this.props.maxleaves - userMap.days_count});
+        await this.setState({remainingLeaves: this.props.maxleaves - userMap.days_count, name: userMap.name});
+
+        const myleaves = await this.state.contract.methods.getMyLeaves(this.state.accounts[0]).call();
+        // console.log(myleaves);
+
+        let tempArray = [];
+        
+        for(var i = 0; i < myleaves[1].length; ++i){
+            let oo = [
+                i+1,  
+                myleaves[1][i],
+                myleaves[2][i],
+                myleaves[3][i],
+            ];
+            tempArray.push(oo);
+        }
+        await this.setState({history: tempArray});
+        console.log(this.state.history);
     };
 
     handleAskLeave = async (event) => {
@@ -33,6 +53,25 @@ class InitialPage extends Component {
         }
 
     }
+    test = (val) => {
+        if(val == 0)return(
+            <td class = "statusPending"><span>Pending</span></td>
+        );
+        else if(val ==1 )return(<td class = "statusApproved"><span> &#10004; Approved</span></td>);
+        else if(val == 2)return <td class = "statusCancelled"><span>&#10008; Rejected</span></td>
+        else return <td class = "statusCancelled"><span>&#10008; Cancelled</span></td>
+    }
+    test2 = (val, ind) => {
+        if(val == 0)return(
+            <td><button class = "btn btn-danger btn-small" type = "button" onClick = {async () => {
+                await this.state.contract.methods.cancelLeave(ind).send({ from: this.state.accounts[0] });
+                window.location.reload();
+            }}>Cancel</button></td>
+        );
+        else if(val ==1 )return(<td>N/A</td>);
+        else if(val == 2)return <td>N/A</td>
+        else return <td>N/A</td>
+    }
 
     render() {
         return (
@@ -40,7 +79,7 @@ class InitialPage extends Component {
             <div class="container">
                 <div class="row">
                     <div class="col-md-offset-1 col-md-10">
-                        <h2 class=" text-white">Welcome <span>UserName</span>!
+                        <h2 class=" text-white">Welcome <span>{this.state.name}</span>!
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         Leaves Remaining:<span>{this.state.remainingLeaves}</span></h2>
                         
@@ -102,43 +141,39 @@ class InitialPage extends Component {
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            {this.state.history.map(value => 
                                                 <tr>
-                                                    <td>1</td>
-                                                    <td>5</td>
-                                                    <td class="statusPending">
-                                                        <span>Pending</span>
-                                                    </td>
                                                     <td>
-                                                        <button type="button">Cancel</button>
+                                                        {value[0]}
                                                     </td>
-
+                                                    
+                                                    <td>
+                                                        {value[2]}
+                                                    </td>
+                                                    {this.test(value[3])}
+                                                    {this.test2(value[3], value[1])}
+                                                    
+                                                    {/* <td><div class="w3-section">
+                                                        <button class="btn btn-success btn-small" onClick = {async () => {
+                                                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
+                                                            window.location.reload();
+                                                        }}>
+                                                        Accept
+                                                        </button><span>&nbsp;</span>
+                                                        <button class="btn btn-danger btn-small" onClick = {async () => {
+                                                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
+                                                            window.location.reload();
+                                                        }}>
+                                                        
+                                                        Decline
+                                                        
+                                                        </button>
+                                                    </div></td> */}
                                                 </tr>
-                                                <tr>
-                                                    <td>2</td>
-                                                    <td>4</td>
-                                                    <td class="statusCancelled">&#10008; Cancelled</td>
-                                                    <td>N/A</td>
-
-                                                </tr>
-
-                                                <tr>
-                                                    <td>3</td>
-                                                    <td>5</td>
-                                                    <td class="statusApproved">&#10004; Approved</td>
-                                                    <td>N/A</td>
-
-                                                </tr>
-                                                <tr>
-                                                    <td>4</td>
-                                                    <td>4</td>
-                                                    <td class="statusApproved">&#10004; Approved</td>
-                                                    <td>N/A</td>
-
-                                                </tr>
+                                            )}
                                             </tbody>
                                             </table>
 
-                                            <span>Total count</span>
                                 </div>
                             </div>
                         </div>
