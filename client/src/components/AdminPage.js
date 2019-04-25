@@ -13,9 +13,24 @@ class InitialPage extends Component {
     componentDidMount = async () => {
         await this.setState({ accounts: this.props.accounts, contract: this.props.contract });
         
-        const { contract } = this.state;
-        const temp = await contract.methods.toApprove().call();
-        console.log(temp);
+        const temp = await this.state.contract.methods.toApprove().call();
+        // console.log(temp);
+
+        let tempArray = [];
+        
+        for(var i = 0; i < temp[1].length; ++i){
+            let userMap = await this.state.contract.methods.users(temp[2][i]).call();
+            var oo = {
+                leaveID: temp[1][i],
+                name: userMap.name,
+                eID: userMap.id,
+                days: temp[3][i],
+            };
+            tempArray.push(oo);
+        }
+        await this.setState({pending: tempArray});
+
+        console.log(this.state.pending);
     };
 
     handleRegisterEmp = async (event) => {
@@ -63,8 +78,6 @@ class InitialPage extends Component {
     }
 
     render() {
-        const { contract } = this.state;
-        
         return (
             <div id="main">
                 <div class="container">

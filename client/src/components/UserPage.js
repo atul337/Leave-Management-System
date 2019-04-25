@@ -13,6 +13,24 @@ class InitialPage extends Component {
         this.setState({accounts: this.props.accounts, contract: this.props.contract});
     };
 
+    handleAskLeave = async (event) => {
+        // alert('A name was submitted: ' + this.state.value);
+
+        event.preventDefault();
+
+        const { accounts, contract } = this.state;
+
+        if (window.confirm("Apply for leave")) {
+
+            await contract.methods.ask_leave(event.target.days.value).send({ from: accounts[0] });
+            window.location.reload();
+        }
+        else {
+            window.location.reload();
+        }
+
+    }
+
     render() {
         return (
             <div id="main">
@@ -29,34 +47,29 @@ class InitialPage extends Component {
 
 
                         <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                                <h4 class="panel-title">
-                                    <a class="collapsed last" role="button" data-toggle="collapse"
-                                        data-parent="#accordion" href="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
-                                        Apply for leave
-                                        <span> </span>
-                                    </a>
-                                </h4>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel"
-                                aria-labelledby="headingThree">
-                                <div class="panel-body">
-                                    <div class="signup-form">
-                                        <form onSubmit={this.handleAskLeave}>
-                                            <div class="form-group">
-                                                <label>No. of days </label>
-                                                <input type="number" class="form-control" name="days"
-                                                    required="required" />
-                                            </div>
-                                            <div class="form-group">
-                                                <button type="submit"
-                                                    class="btn btn-primary btn-block btn-lg">Apply</button>
-                                            </div>
-                                        </form>
+                                    <div class="panel-heading" role="tab" id="headingThree">
+                                        <h4 class="panel-title">
+                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                                Apply for leave
+                                                <span> </span>
+                                            </a>
+                                        </h4>
                                     </div>
-                                </div>
-                            </div>
+                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div class="panel-body">
+                                            <div class="signup-form">
+                                                <form onSubmit={this.handleAskLeave}>
+                                                    <div class="form-group">
+                                                        <label>No. of days  </label>
+                                                        <input type="number" class="form-control" name="days" required="required" />
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
                         </div>
 
 

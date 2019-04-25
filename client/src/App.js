@@ -54,10 +54,9 @@ class App extends Component {
 
     // Update state with the result.
     this.setState({ adminDone: response, adminAdress: adminadd, userExist:userexist});
+    console.log(this.state.userExist);
     // this.handleChange = this.handleChange.bind(this);
     // this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
-
-
   };
 
   render() {
@@ -72,7 +71,7 @@ class App extends Component {
     else if(this.state.accounts[0] == this.state.adminAdress ){
       return(<AdminPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
-    else if(this.userExist){
+    else if(this.state.userExist){
       return(<UserPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
     else return(<div id = "noone"><h2>You are not registered yet. Contact Admin</h2></div>);
