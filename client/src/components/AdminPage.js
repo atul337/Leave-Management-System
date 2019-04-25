@@ -211,8 +211,20 @@ class InitialPage extends Component {
                                                         {value[3]}
                                                     </td>
                                                     <td><div class="w3-section">
-                                                        <button class="btn btn-success btn-small">Accept</button><span>&nbsp;</span>
-                                                        <button class="btn btn-danger btn-small">Decline</button>
+                                                        <button class="btn btn-success btn-small" onClick = {async () => {
+                                                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
+                                                            window.location.reload();
+                                                        }}>
+                                                        Accept
+                                                        </button><span>&nbsp;</span>
+                                                        <button class="btn btn-danger btn-small" onClick = {async () => {
+                                                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
+                                                            window.location.reload();
+                                                        }}>
+                                                        
+                                                        Decline
+                                                        
+                                                        </button>
                                                     </div></td>
                                                 </tr>
                                             )}
