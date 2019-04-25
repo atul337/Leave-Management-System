@@ -8,20 +8,10 @@ import UserPage from "./components/UserPage"
 class App extends Component {
   state = {
     adminDone : false, 
-    Name: '', 
-    EmpID: '', 
-    EmpAddress:'',
     web3: null, 
     accounts: null, 
     contract: null,
-    leaveDays:'',
     adminAdress: '' ,
-    newadminAdress:'',
-    maxleave:'',
-    curName: '',
-    curID:'',
-    leavesRemain:'',
-    curmaxleave:''
   };
 
   componentDidMount = async () => {
@@ -59,7 +49,6 @@ class App extends Component {
     const response = await contract.methods.adminDone().call();
     const adminadd = await contract.methods.admin().call();
     // const tempdetails = await contract.methods.curdetails(accounts[0]).call();
-    const tempml = await contract.methods.max_leave().call();
 
     // Update state with the result.
     this.setState({ adminDone: response, adminAdress: adminadd, curmaxleave : tempml});
