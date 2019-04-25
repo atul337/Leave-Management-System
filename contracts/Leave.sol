@@ -67,8 +67,8 @@ contract Leave
     function makeadmin(string memory nname, string memory idd) public returns (bool)
     {
         if(userExists(msg.sender)||adminDone)return false;
-        fetch[idd]=admin;
         admin=msg.sender;
+        fetch[idd]=admin;
         adminDone=true;//admin is now registered
         users[admin]=user({
             name: nname,
