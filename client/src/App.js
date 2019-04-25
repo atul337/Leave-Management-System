@@ -51,7 +51,7 @@ class App extends Component {
     // const tempdetails = await contract.methods.curdetails(accounts[0]).call();
 
     // Update state with the result.
-    this.setState({ adminDone: response, adminAdress: adminadd, curmaxleave : tempml});
+    this.setState({ adminDone: response, adminAdress: adminadd});
     // this.handleChange = this.handleChange.bind(this);
     // this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
 
