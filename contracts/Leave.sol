@@ -4,144 +4,227 @@ Amit Priyankar(1701CS04)
 Ankur Dubey(1701CS07)
 Atul Upadhyay(1701CS13)
 B.Tech Second Year, IIT Patna
+2019
 */
 pragma solidity >=0.4.22 <0.6.0;
 
 contract Leave
 {
-    struct Person
+    struct user
     {
-        string name;//name of the person
-        string id;// identity card number
-        bool available;//if there is chance of taking leave
-        uint64 leave_count;//number of leaves taken till date
+        string name;
+        string id;
+        address account;
+        uint leave_count;//no of leaves taken
+        uint days_count;//no of days of leaves
+        bool exist;
+    }//there can be need to store the leave ledger number for the different leaves of an user
+    
+    struct leavedetail
+    {
+        address applicant;
+        uint dayCount;//number of days in a particular leave
+        leavestatus status;
     }
 
-    uint64 public max_leave = 20;//maximum number of leaves that can be taken in a year
-    
-    address public admin;//the person who can register someone into the database
-    
-    bool public admindone=false;//checks if admin is there(added later)
-
-    mapping(address=>Person) person;//mapping address to the person
-    mapping(address=>bool) registered;//this store if the person is registered in the database
-    
-    
-    mapping(string=>address)emp_details;//added later
-
-    function makeadmin(string memory nname, string memory idd) public
+    enum leavestatus
     {
-        //following steps are just the registration of admin with all his details
-        admin=msg.sender;//registering admin as the sender of the argument to this function
-        person[admin].name=nname;
-        person[admin].id=idd;
-        person[admin].available=true;
-        person[admin].leave_count=0;
-        registered[admin]=true;
-        emp_details[idd]=admin;
-        admindone=true;
+        APPLIED, APPROVED, REJECTED, CANCELLED
     }
-    function setmaxleave(uint64 count) public//function to set the maximum number of leaves that can be taken
+    
+    address public admin;//address which will be registered first
+    bool public adminDone=false;
+    uint64 public max_leave = 30;//maximum number of leaves that can be taken in a year
+
+    mapping(address=>user) public users;
+    leavedetail[] public leaves;
+    mapping(string=>address) fetch;//mapping from employee ID to the address of an employee
+    uint reached=0;
+
+    function userExists(address x) public view returns (bool)
     {
-        if(msg.sender!=admin){revert();}
-        max_leave=count;
+        return users[x].exist;
     }
-    //function to register a new person to the database
-    function register(address toPerson, string memory nname, string memory idd) public
+
+    function approve_leave(uint idx) public returns (bool)
     {
-        if(msg.sender!=admin||registered[toPerson]==true){revert();}
+        if(msg.sender!=admin)return false;
+        else if (leaves[idx].status!=leavestatus.APPLIED)return false;
+        leaves[idx].status=leavestatus.APPROVED;
+        return true;
+    }
+
+    function reject_leave(uint idx) public returns (bool)
+    {
+        if(msg.sender!=admin)return false;
+        else if (leaves[idx].status!=leavestatus.APPLIED) return false;
+        leaves[idx].status=leavestatus.REJECTED;
+        users[leaves[idx].applicant].days_count-=leaves[idx].dayCount;
+        return true;
+    }
+
+    //set admin
+    function makeadmin(string memory nname, string memory idd) public returns (bool)
+    {
+        if(userExists(msg.sender)||adminDone)return false;
+        fetch[idd]=admin;
+        admin=msg.sender;
+        adminDone=true;//admin is now registered
+        users[admin]=user({
+            name: nname,
+            id: idd,
+            account: admin,
+            leave_count:0, 
+            days_count:0,
+            exist:true
+        });
+        return true;
+    }
+
+    //register new user
+    function register(address useradd, string memory nname, string memory idd) public returns (bool)
+    {
+        if(msg.sender!=admin||userExists(useradd)||!adminDone)return false;
+        fetch[idd]=useradd;
+        users[useradd]=user({
+            name: nname,
+            id:idd, 
+            account: useradd, 
+            leave_count:0, 
+            days_count:0,
+            exist:true
+        });
+    }
+
+    function ask_leave(uint no_of_days) public returns (bool)
+    {
+        if(userExists(msg.sender)!=true)return false;
+        require(userExists(msg.sender)==true);
+        require(max_leave - users[msg.sender].days_count > 0);
         
-        person[toPerson].name=nname;
-        person[toPerson].id=idd;
-        person[toPerson].available=true;
-        person[toPerson].leave_count=0;
-        registered[toPerson]=true;
-        emp_details[idd]=toPerson;
-    }
-    //function for a person to check number of days available for him to take a leave
-    function ask_available() public view returns (uint64 days_available)
-    {
-        require(registered[msg.sender]==true);
-        address temp;
-        temp=msg.sender;
+        leavedetail memory temp;
+        temp.applicant=msg.sender;
+        temp.dayCount=no_of_days;
+        temp.status=leavestatus.APPLIED;
+        users[msg.sender].days_count+=no_of_days;
+        leaves.push(temp);
         
-        days_available=max_leave-person[temp].leave_count;
-        //can also return multiple values here if we want to give 
-        //any kind of message to the user asking for leave
+        users[msg.sender].leave_count++;
+        return true;
     }
-    
-    
-    //for this function some special arrangements are to be made to print
-    //the message corresponding to the integer reply
-    function ask_leave(uint64 count_days) public returns (int8 reply)//function for person to ask leave
+    function cancelLeave(uint idx) public returns (bool)
     {
-        require(registered[msg.sender]==true);
-        require((person[msg.sender].leave_count + count_days) <= max_leave);
-        address temp;
-        temp=msg.sender;
-    
-        //it is to be checked if the person asking for
-        //leave is actually registered in the database
-        if(person[temp].available==false)reply=0;
-        else if(person[temp].leave_count+count_days<=max_leave)
+        if(msg.sender!=leaves[idx].applicant)return false;
+        else if(leaves[idx].status==leavestatus.APPLIED)
         {
-            person[temp].leave_count+=count_days;
-            if(person[temp].leave_count==0)person[temp].available=false;
-            reply=1;
+            leaves[idx].status=leavestatus.CANCELLED;
+            users[msg.sender].days_count-=leaves[idx].dayCount;
+            return true;
         }
-        else reply=3;
+        else return false;
+    }
+    // function getAllLeaves() public view returns (bool, address[] memory, uint[] memory, leavestatus[] memory)
+    // {
+    //     uint size=leaves.length;
+        
+    //     address[] memory tempAddress=new address[](size);
+    //     uint[] memory tempDays = new uint[](size);
+    //     leavestatus[] memory tempLeaveStatus= new leavestatus[](size);
+        
+    //     if(msg.sender!=admin)
+    //     {
+    //         return (false, tempAddress, tempDays, tempLeaveStatus);
+    //     }
+
+    //     for(uint i=0; i<size;i++)
+    //     {
+    //         tempAddress[i]=leaves[i].applicant;
+    //         tempDays[i]=leaves[i].dayCount;
+    //         tempLeaveStatus[i]=leaves[i].status;
+    //     }
+    //     return (true, tempAddress, tempDays, tempLeaveStatus);
+
+    // }
+    uint[] tempIndex;
+    address[] tempAdd;
+    uint[] tempDays;
+    function toApprove() public returns (bool, uint[] memory, address[] memory, uint[] memory)
+    {
+        uint size=leaves.length;
+        
+        uint[] memory ttempIndex;
+        address[] memory ttempAdd;
+        uint[] memory ttempDays;
+        
+        tempIndex=ttempIndex;
+        tempAdd=ttempAdd;
+        tempDays=ttempDays;
+        
+        if(msg.sender!=admin)
+        {
+            return (false, tempIndex, tempAdd, tempDays);
+        }
+        bool ok=true;
+        for(uint i=reached; i<size;i++)
+        {
+            if(leaves[i].status==leavestatus.APPLIED)
+            {
+                ok=false;
+                tempIndex.push(i);
+                tempAdd.push(leaves[i].applicant);
+                // tempName.push(users[leaves[i].applicant].name);
+                // tempId.push(users[leaves[i].applicant].id);
+                tempDays.push(leaves[i].dayCount);
+                // tempLeaveStatus.push(leaves[i].status);
+            }
+            else if(ok)reached=i;
+        }
+        return (true, tempIndex, tempAdd, tempDays);
     }
 
-    function details(string memory idd) view public returns (string memory name, string memory id, uint64 leave_count)
+    function showLeave(uint i) public view returns (bool, address, uint, leavestatus) 
+    {
+		uint temp1;
+		address temp2;
+		if(i>=leaves.length)return (false, temp2, temp1, leavestatus.APPLIED);
+		return (true, leaves[i].applicant, leaves[i].dayCount, leaves[i].status);
+	}
+    
+    function getMyLeaves() public view returns (bool, uint[] memory, uint[] memory, leavestatus[] memory) 
+    {
+		uint size = users[msg.sender].leave_count;
+        uint[] memory ttempIndex = new uint[](size);
+		uint[] memory ttempDays = new uint[](size);
+		leavestatus[] memory tempLeaveStatus = new leavestatus[](size);
+		
+        if(size==0)return (false, ttempIndex, ttempDays, tempLeaveStatus);
+		uint ct=0;
+		size = leaves.length;
+		for (uint i=size-1;i>=0;i--){
+			if(leaves[i].applicant == msg.sender)
+            {
+                ttempIndex[ct]=i;
+				// tempAddress[ct]=leaves[i].applicant;
+				ttempDays[ct]=leaves[i].dayCount;
+				tempLeaveStatus[ct]=leaves[i].status;
+				ct++;	
+			}
+		}
+		return (true, ttempIndex, ttempDays, tempLeaveStatus);
+	}//this can be optimisted by using a mapping which stores the indexes of leaves of all the user
+
+    //fetch details of a user
+    function details(string memory idd) public view returns (bool, string memory, uint)
     {
         require(msg.sender==admin);
-        address temp=emp_details[idd];
-        name=person[temp].name;
-        id=person[temp].id;
-        leave_count=person[temp].leave_count;
-    }
-
-    function curdetails(address temp) view public returns (string memory name, string memory id, uint64 leave_count)
-    {
-        // require(msg.sender==admin);
-        // address temp=msg.sender;`
-        name=person[temp].name;
-        id=person[temp].id;
-        leave_count=person[temp].leave_count;
-    }
-
-
-    function changeadmin(address newadd) public
-    {
-        if(msg.sender!=admin)revert();
-        require(registered[newadd]==true);
-        admin=newadd;
+        string memory tempName;
+        // uint leaveCount;
+        uint daysCount;//number of days remaining
+        if(userExists(fetch[idd])!=true)return (false, tempName, daysCount);
+        user memory temp=users[fetch[idd]];
+        tempName=temp.name;
+        // leaveCount=temp.leave_count;
+        daysCount= max_leave - temp.days_count;
+        return (true, tempName, daysCount);
     }
 }
-
-/*
-to call a function inside another function we can define a library of functions as shown below
-
-pragma solidity ^0.4.13;
-
-contract test {
-
-    uint public fee; 
-    function setFee(uint _fee){
-      fee = Sf.mul(_fee,10);
-    }
-
-}
-
-
-library Sf{
-
-  function mul(uint256 a, uint256 b) internal constant returns (uint256) {
-    uint256 c = a * b;
-    assert(a == 0 || c / a == b);
-    return c;
-  }
-
-
-}
-*/

@@ -12,6 +12,8 @@ class InitialPage extends Component {
 
     componentDidMount = async () => {
         this.setState({ accounts: this.props.accounts, contract: this.props.contract });
+        const pending = await contrat.methods.toApprove().call();
+        thie.setState({pending: pending});
     };
 
     handleRegisterEmp = async (event) => {
