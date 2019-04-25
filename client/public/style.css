@@ -5,3 +5,11 @@ nav{
     padding-left:1em;
     padding-top:0.5em;
 }
+#noone{
+    text-align: center;
+    margin: 3em auto;
+    
+}
+#noone h2{
+    color: white;
+}

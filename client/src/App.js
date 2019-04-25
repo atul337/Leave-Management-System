@@ -12,6 +12,7 @@ class App extends Component {
     accounts: null, 
     contract: null,
     adminAdress: '' ,
+    userExist:false
   };
 
   componentDidMount = async () => {
@@ -43,15 +44,16 @@ class App extends Component {
   };
 
   runExample = async () => {
-    const { contract } = this.state;
+    const { accounts, contract } = this.state;
 
     // Get the value from the contract to prove it worked.
     const response = await contract.methods.adminDone().call();
     const adminadd = await contract.methods.admin().call();
+    const userexist = await contract.methods.userExists(accounts[0]).call();
     // const tempdetails = await contract.methods.curdetails(accounts[0]).call();
 
     // Update state with the result.
-    this.setState({ adminDone: response, adminAdress: adminadd});
+    this.setState({ adminDone: response, adminAdress: adminadd, userExist:userexist});
     // this.handleChange = this.handleChange.bind(this);
     // this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
 
@@ -70,9 +72,10 @@ class App extends Component {
     else if(this.state.accounts[0] == this.state.adminAdress ){
       return(<AdminPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
-    else {
+    else if(this.userExist){
       return(<UserPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
+    else return(<div id = "noone"><h2>You are not registered yet. Contact Admin</h2></div>);
   }
 }
 
