@@ -24,6 +24,8 @@ contract Leave
     {
         address applicant;
         uint dayCount;//number of days in a particular leave
+        uint from;
+        uint to;
         leavestatus status;
     }
 
@@ -96,13 +98,15 @@ contract Leave
         });
     }
 
-    function ask_leave(uint no_of_days) public returns (bool)
+    function ask_leave(uint no_of_days, uint from, uint to) public returns (bool)
     {
         require(max_leave - users[msg.sender].days_count >= no_of_days);
         
         leavedetail memory temp;
         temp.applicant=msg.sender;
         temp.dayCount=no_of_days;
+        temp.from = from;
+        temp.to = to;
         temp.status=leavestatus.APPLIED;
         users[msg.sender].days_count+=no_of_days;
         leaves.push(temp);
@@ -146,21 +150,27 @@ contract Leave
     uint[] tempIndex;
     address[] tempAdd;
     uint[] tempDays;
-    function toApprove() public returns (bool, uint[] memory, address[] memory, uint[] memory)
+    uint[] tempfrom;
+    uint[] tempto;
+    function toApprove() public returns (bool, uint[] memory, address[] memory, uint[] memory, uint[] memory, uint[] memory)
     {
         uint size=leaves.length;
         
         uint[] memory ttempIndex;
         address[] memory ttempAdd;
         uint[] memory ttempDays;
+        uint[] memory ttempfrom;
+        uint[] memory ttempto;
         
         tempIndex=ttempIndex;
         tempAdd=ttempAdd;
         tempDays=ttempDays;
+        tempfrom = ttempfrom;
+        tempto = ttempto;
         
         if(msg.sender!=admin)
         {
-            return (false, tempIndex, tempAdd, tempDays);
+            return (false, tempIndex, tempAdd, tempDays, tempfrom, tempto);
         }
         bool ok=true;
         for(uint i=reached; i<size;i++)
@@ -173,11 +183,13 @@ contract Leave
                 // tempName.push(users[leaves[i].applicant].name);
                 // tempId.push(users[leaves[i].applicant].id);
                 tempDays.push(leaves[i].dayCount);
+                tempfrom.push(leaves[i].from);
+                tempto.push(leaves[i].to);
                 // tempLeaveStatus.push(leaves[i].status);
             }
             else if(ok)reached=i;
         }
-        return (true, tempIndex, tempAdd, tempDays);
+        return (true, tempIndex, tempAdd, tempDays, tempfrom, tempto);
     }
 
     function showLeave(uint i) public view returns (bool, address, uint, leavestatus) 
@@ -188,14 +200,16 @@ contract Leave
 		return (true, leaves[i].applicant, leaves[i].dayCount, leaves[i].status);
 	}
     
-    function getMyLeaves(address add) public view returns (bool, uint[] memory, uint[] memory, leavestatus[] memory) 
+    function getMyLeaves(address add) public view returns (bool, uint[] memory, uint[] memory, leavestatus[] memory, uint[] memory, uint[] memory) 
     {
 		uint size = users[add].leave_count;
         uint[] memory ttempIndex = new uint[](size);
 		uint[] memory ttempDays = new uint[](size);
+		uint[] memory ttempfrom = new uint[](size);
+		uint[] memory ttempto = new uint[](size);
 		leavestatus[] memory tempLeaveStatus = new leavestatus[](size);
 		
-        if(size==0)return (false, ttempIndex, ttempDays, tempLeaveStatus);
+        if(size==0)return (false, ttempIndex, ttempDays, tempLeaveStatus, ttempfrom, ttempto);
 		uint ct=size-1;
 		size = leaves.length;
 		for (uint i=0;i<size;i++){
@@ -204,11 +218,13 @@ contract Leave
                 ttempIndex[ct]=i;
 				// tempAddress[ct]=leaves[i].applicant;
 				ttempDays[ct]=leaves[i].dayCount;
+				ttempfrom[ct]=leaves[i].from;
+				ttempto[ct]=leaves[i].to;
 				tempLeaveStatus[ct]=leaves[i].status;
 				ct--;	
 			}
 		}
-		return (true, ttempIndex, ttempDays, tempLeaveStatus);
+		return (true, ttempIndex, ttempDays, tempLeaveStatus, ttempfrom, ttempto);
 	}//this can be optimisted by using a mapping which stores the indexes of leaves of all the user
 
     //fetch details of a user

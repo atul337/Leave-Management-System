@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import DatePicker from "react-datepicker";
+import moment from 'moment'
 
+import "react-datepicker/dist/react-datepicker.css";
 import "./css/admin.css"
 
 class InitialPage extends Component {
@@ -7,7 +10,9 @@ class InitialPage extends Component {
     state = {
         accounts: null,
         contract: null,
-        pending: []
+        pending: [],
+        fromdate: new Date(),
+        todate: new Date()
     };
 
     componentDidMount = async () => {
@@ -25,6 +30,8 @@ class InitialPage extends Component {
                 userMap.name,
                 userMap.id,
                 temp[3][i],
+                moment(new Date(Number(temp[4][i]))).format("DD/MM/YYYY"),
+                moment(new Date(Number(temp[5][i]))).format("DD/MM/YYYY")
             ];
             tempArray.push(oo);
         }
@@ -35,7 +42,6 @@ class InitialPage extends Component {
 
     handleRegisterEmp = async (event) => {
         event.preventDefault();
-        this.renderTable = this.render.bind(this);
 
         const { accounts, contract } = this.state;
 
@@ -60,22 +66,87 @@ class InitialPage extends Component {
         else alert("No Employee Found!");
 
     }
+
+    handleFromDate = async (e) => {
+        await this.setState({fromdate: e});
+        var now = new Date();
+        // console.log(this.state.fromdate.getTime());
+        // let x = new Date(this.state.fromdate.getTime());
+        // console.log(moment(x).format("DD/MM/YYYY"));
+    }
+    handleToDate = async (e) => {
+        await this.setState({todate: e});
+        // console.log(this.state.todate);
+    }
     handleAskLeave = async (event) => {
         // alert('A name was submitted: ' + this.state.value);
 
         event.preventDefault();
 
+        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        var days = Math.round(Math.abs((this.state.fromdate.getTime() - this.state.todate.getTime())/(oneDay))) + 1;
+
         const { accounts, contract } = this.state;
-
-        if (window.confirm("Apply for leave")) {
-
-            await contract.methods.ask_leave(event.target.days.value).send({ from: accounts[0] });
+        var now = new Date();
+        if(this.state.fromdate.getTime() < now.getTime()){
+            alert("Start date should be after today!");
+            window.location.reload();
+        }
+        else if(this.state.fromdate.getTime() >= this.state.todate.getTime()){
+            alert("Start date cannot be greater than end date!");
+            window.location.reload();
+        }
+        else if (window.confirm("Apply for leave")) {
+            await contract.methods.ask_leave(days, this.state.fromdate.getTime(), this.state.todate.getTime()).send({ from: accounts[0] });
             window.location.reload();
         }
         else {
             window.location.reload();
         }
 
+    }
+   
+    renderTable = () => {
+        return(
+            this.state.pending.map(value => 
+                <tr>
+                    <td>
+                        {value[0].toString()}
+                    </td>
+                    <td>
+                        {value[1].toString()}
+                    </td>
+                    <td>
+                        {value[2].toString()}
+                    </td>
+                    <td>
+                        {value[4].toString()}
+                    </td>
+                    <td>
+                        {value[5].toString()}
+                    </td>
+                    <td>
+                        {value[3].toString()}
+                    </td>
+                    <td><div class="w3-section">
+                        <button class="btn btn-success btn-small" onClick = {async () => {
+                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
+                            window.location.reload();
+                        }}>
+                        Approve
+                        </button><span>&nbsp;</span>
+                        <button class="btn btn-danger btn-small" onClick = {async () => {
+                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
+                            window.location.reload();
+                        }}>
+                        
+                        Reject
+                        
+                        </button>
+                    </div></td>
+                </tr>
+            )
+        );
     }
 
     render() {
@@ -162,8 +233,13 @@ class InitialPage extends Component {
                                             <div class="signup-form">
                                                 <form onSubmit={this.handleAskLeave}>
                                                     <div class="form-group">
-                                                        <label>No. of days  </label>
-                                                        <input type="number" class="form-control" name="days" required="required" />
+                                                        <label>&nbsp;From </label>
+                                                        <br></br>
+                                                        <DatePicker selected={this.state.fromdate} onChange = {this.handleFromDate}/>
+                                                        <br></br><br></br>
+                                                        <label>&nbsp;To </label>
+                                                        <br></br>
+                                                        <DatePicker selected={this.state.todate} onChange = {this.handleToDate}/>
                                                     </div>
                                                     <div class="form-group">
                                                         <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
@@ -177,12 +253,9 @@ class InitialPage extends Component {
                                 <div class="panel panel-default">
                                     <div id="temp">
                                         <h4 >
-                                            
-                                                <b>Pending Leave Requests</b>
-                
-                                           
+                                            <b>Pending Leave Requests</b>
                                         </h4>
-                                    </div>
+                                </div>
 
                                     <table>
                                         <thead>
@@ -190,50 +263,22 @@ class InitialPage extends Component {
                                                 <th>Leave ID</th>
                                                 <th>Name of Emp.</th>
                                                 <th>Employee ID</th>
-                                                <th>Leave Applied</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>No. of days</th>
                                                 <th>Action</th>
-
                                             </tr>
                                         </thead>
+
                                         <tbody>
-                                            {this.state.pending.map(value => 
-                                                <tr>
-                                                    <td>
-                                                        {value[0]}
-                                                    </td>
-                                                    <td>
-                                                        {value[1]}
-                                                    </td>
-                                                    <td>
-                                                        {value[2]}
-                                                    </td>
-                                                    <td>
-                                                        {value[3]}
-                                                    </td>
-                                                    <td><div class="w3-section">
-                                                        <button class="btn btn-success btn-small" onClick = {async () => {
-                                                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
-                                                            window.location.reload();
-                                                        }}>
-                                                        Accept
-                                                        </button><span>&nbsp;</span>
-                                                        <button class="btn btn-danger btn-small" onClick = {async () => {
-                                                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
-                                                            window.location.reload();
-                                                        }}>
-                                                        
-                                                        Decline
-                                                        
-                                                        </button>
-                                                    </div></td>
-                                                </tr>
-                                            )}
+                                            {this.renderTable()}
                                         </tbody>
+
                                     </table>
                                 </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
                 </div >
             </div >
         );

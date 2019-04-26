@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
+import DatePicker from "react-datepicker";
+import moment from 'moment'
 
+import "react-datepicker/dist/react-datepicker.css";
 import "./css/user.css"
 
 class InitialPage extends Component {
@@ -9,6 +12,8 @@ class InitialPage extends Component {
         accounts: null,
         contract: null,
         remainingLeaves: 0,
+        fromdate: new Date(),
+        todate: new Date(),
         history: []
     };
 
@@ -29,6 +34,8 @@ class InitialPage extends Component {
                 myleaves[1][i],
                 myleaves[2][i],
                 myleaves[3][i],
+                moment(new Date(Number(myleaves[4][i]))).format("DD/MM/YYYY"),
+                moment(new Date(Number(myleaves[5][i]))).format("DD/MM/YYYY")
             ];
             tempArray.push(oo);
         }
@@ -36,16 +43,37 @@ class InitialPage extends Component {
         console.log(this.state.history);
     };
 
+    handleFromDate = async (e) => {
+        await this.setState({fromdate: e});
+        var now = new Date();
+        // console.log(this.state.fromdate.getTime());
+        // let x = new Date(this.state.fromdate.getTime());
+        // console.log(moment(x).format("DD/MM/YYYY"));
+    }
+    handleToDate = async (e) => {
+        await this.setState({todate: e});
+        // console.log(this.state.todate);
+    }
     handleAskLeave = async (event) => {
         // alert('A name was submitted: ' + this.state.value);
 
         event.preventDefault();
 
+        var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
+        var days = Math.round(Math.abs((this.state.fromdate.getTime() - this.state.todate.getTime())/(oneDay))) + 1;
+
         const { accounts, contract } = this.state;
-
-        if (window.confirm("Apply for leave")) {
-
-            await contract.methods.ask_leave(event.target.days.value).send({ from: accounts[0] });
+        var now = new Date();
+        if(this.state.fromdate.getTime() < now.getTime()){
+            alert("Start date should be after today!");
+            window.location.reload();
+        }
+        else if(this.state.fromdate.getTime() >= this.state.todate.getTime()){
+            alert("Start date cannot be greater than end date!");
+            window.location.reload();
+        }
+        else if (window.confirm("Apply for leave")) {
+            await contract.methods.ask_leave(days, this.state.fromdate.getTime(), this.state.todate.getTime()).send({ from: accounts[0] });
             window.location.reload();
         }
         else {
@@ -102,8 +130,13 @@ class InitialPage extends Component {
                                             <div class="signup-form">
                                                 <form onSubmit={this.handleAskLeave}>
                                                     <div class="form-group">
-                                                        <label>No. of days  </label>
-                                                        <input type="number" class="form-control" name="days" required="required" />
+                                                        <label>&nbsp;From </label>
+                                                        <br></br>
+                                                        <DatePicker selected={this.state.fromdate} onChange = {this.handleFromDate}/>
+                                                        <br></br><br></br>
+                                                        <label>&nbsp;To </label>
+                                                        <br></br>
+                                                        <DatePicker selected={this.state.todate} onChange = {this.handleToDate}/>
                                                     </div>
                                                     <div class="form-group">
                                                         <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
@@ -134,7 +167,9 @@ class InitialPage extends Component {
                                         <thead>
                                             <tr>
                                                 <th>S/No.</th>
-                                                <th>Leaves Applied</th>
+                                                <th>From</th>
+                                                <th>To</th>
+                                                <th>No. of Days</th>
                                                 <th>Status</th>
                                                 <th>Action</th>
 
@@ -144,31 +179,20 @@ class InitialPage extends Component {
                                             {this.state.history.map(value => 
                                                 <tr>
                                                     <td>
-                                                        {value[0]}
+                                                        {value[0].toString()}
+                                                    </td>
+                                                    <td>
+                                                        {value[4].toString()}
+                                                    </td>
+                                                    <td>
+                                                        {value[5].toString()}
                                                     </td>
                                                     
                                                     <td>
-                                                        {value[2]}
+                                                        {value[2].toString()}
                                                     </td>
                                                     {this.test(value[3])}
                                                     {this.test2(value[3], value[1])}
-                                                    
-                                                    {/* <td><div class="w3-section">
-                                                        <button class="btn btn-success btn-small" onClick = {async () => {
-                                                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
-                                                            window.location.reload();
-                                                        }}>
-                                                        Accept
-                                                        </button><span>&nbsp;</span>
-                                                        <button class="btn btn-danger btn-small" onClick = {async () => {
-                                                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
-                                                            window.location.reload();
-                                                        }}>
-                                                        
-                                                        Decline
-                                                        
-                                                        </button>
-                                                    </div></td> */}
                                                 </tr>
                                             )}
                                             </tbody>
