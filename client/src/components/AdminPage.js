@@ -36,7 +36,7 @@ class InitialPage extends Component {
             tempArray.push(oo);
         }
         await this.setState({pending: tempArray});
-        console.log(this.state.pending);
+        // console.log(this.state.pending);
     };
 
 
@@ -85,7 +85,7 @@ class InitialPage extends Component {
 
         var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
         var days = Math.round(Math.abs((this.state.fromdate.getTime() - this.state.todate.getTime())/(oneDay))) + 1;
-
+        console.log(days);
         const { accounts, contract } = this.state;
         var now = new Date();
         if(this.state.fromdate.getTime() < now.getTime()){

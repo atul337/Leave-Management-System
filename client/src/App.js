@@ -56,7 +56,7 @@ class App extends Component {
 
     // Update state with the result.
     this.setState({ adminDone: response, adminAdress: adminadd, userExist:userexist, maxleaves:ml});
-    console.log(this.state.userExist);
+    // console.log(this.state.userExist);
     // this.handleChange = this.handleChange.bind(this);
     // this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
   };

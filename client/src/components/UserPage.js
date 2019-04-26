@@ -40,7 +40,7 @@ class InitialPage extends Component {
             tempArray.push(oo);
         }
         await this.setState({history: tempArray});
-        console.log(this.state.history);
+        // console.log(this.state.history);
     };
 
     handleFromDate = async (e) => {
