@@ -29,19 +29,19 @@ class InitialPage extends Component {
 
     render() {
         return (
-            <div class="signup-form">
+            <div className="signup-form">
                 <form onSubmit = {this.handleSetAdmin}>
                 <h2>Register Admin</h2>
-                    <div class="form-group">
+                    <div className="form-group">
                 <label>Name</label>
-                    <input type="text" class="form-control" name="name" required="required"/>
+                    <input type="text" className="form-control" name="name" required="required"/>
                     </div>
-                    <div class="form-group">
+                    <div className="form-group">
                 <label>Employee Id</label>
-                    <input type="text" class="form-control" name="id" required="required"/>
+                    <input type="text" className="form-control" name="id" required="required"/>
                     </div>
-                <div class="form-group">
-                        <button type="submit" class="btn btn-primary btn-block btn-lg">Register</button>
+                <div className="form-group">
+                        <button type="submit" className="btn btn-primary btn-block btn-lg">Register</button>
                     </div>
                 </form>
             </div>

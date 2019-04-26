@@ -69,7 +69,6 @@ class InitialPage extends Component {
 
     handleFromDate = async (e) => {
         await this.setState({fromdate: e});
-        var now = new Date();
         // console.log(this.state.fromdate.getTime());
         // let x = new Date(this.state.fromdate.getTime());
         // console.log(moment(x).format("DD/MM/YYYY"));
@@ -85,7 +84,7 @@ class InitialPage extends Component {
 
         var oneDay = 24*60*60*1000; // hours*minutes*seconds*milliseconds
         var days = Math.round(Math.abs((this.state.fromdate.getTime() - this.state.todate.getTime())/(oneDay))) + 1;
-        console.log(days);
+        // console.log(days);
         const { accounts, contract } = this.state;
         var now = new Date();
         if(this.state.fromdate.getTime() < now.getTime()){
@@ -128,14 +127,14 @@ class InitialPage extends Component {
                     <td>
                         {value[3].toString()}
                     </td>
-                    <td><div class="w3-section">
-                        <button class="btn btn-success btn-small" onClick = {async () => {
+                    <td><div className="w3-section">
+                        <button className="btn btn-success btn-small" onClick = {async () => {
                             await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
                             window.location.reload();
                         }}>
                         Approve
                         </button><span>&nbsp;</span>
-                        <button class="btn btn-danger btn-small" onClick = {async () => {
+                        <button className="btn btn-danger btn-small" onClick = {async () => {
                             await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
                             window.location.reload();
                         }}>
@@ -152,87 +151,87 @@ class InitialPage extends Component {
     render() {
         return (
             <div id="main">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-offset-1 col-md-10">
-                            <h2 class=" text-white">Welcome Admin!</h2>
-                            <span class="loader pull-right"><span class="loader-inner"></span></span>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-md-offset-1 col-md-10">
+                            <h2 className=" text-white">Welcome Admin!</h2>
+                            <span className="loader pull-right"><span className="loader-inner"></span></span>
                             <br></br>
 
-                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div className="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingThree">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseThree">
+                                <div className="panel panel-default">
+                                    <div className="panel-heading" role="tab" id="headingThree">
+                                        <h4 className="panel-title">
+                                            <a className="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseThree">
                                                 Register New Employee
                                                 <span> </span>
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                        <div class="panel-body">
-                                            <div class="signup-form">
+                                    <div id="collapseOne" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div className="panel-body">
+                                            <div className="signup-form">
                                                 <form onSubmit={this.handleRegisterEmp}>
-                                                    <div class="form-group">
+                                                    <div className="form-group">
                                                         <label>Address</label>
-                                                        <input type="text" class="form-control" name="address" required="required" />
+                                                        <input type="text" className="form-control" name="address" required="required" />
                                                     </div>
-                                                    <div class="form-group">
+                                                    <div className="form-group">
                                                         <label>Name</label>
-                                                        <input type="text" class="form-control" name="name" required="required" />
+                                                        <input type="text" className="form-control" name="name" required="required" />
                                                     </div>
-                                                    <div class="form-group">
+                                                    <div className="form-group">
                                                         <label>Employee Id</label>
-                                                        <input type="text" class="form-control" name="id" required="required" />
+                                                        <input type="text" className="form-control" name="id" required="required" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Register</button>
+                                                    <div className="form-group">
+                                                        <button type="submit" className="btn btn-primary btn-block btn-lg">Register</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingThree">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseThree">
+                                <div className="panel panel-default">
+                                    <div className="panel-heading" role="tab" id="headingThree">
+                                        <h4 className="panel-title">
+                                            <a className="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseThree">
                                                 Fetch Details
                                                 <span> </span>
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                        <div class="panel-body">
-                                            <div class="signup-form">
+                                    <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div className="panel-body">
+                                            <div className="signup-form">
                                                 <form onSubmit={this.handleFetchDetails}>
-                                                    <div class="form-group">
+                                                    <div className="form-group">
                                                         <label>Employee Id</label>
-                                                        <input type="text" class="form-control" name="id" required="required" />
+                                                        <input type="text" className="form-control" name="id" required="required" />
                                                     </div>
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Fetch</button>
+                                                    <div className="form-group">
+                                                        <button type="submit" className="btn btn-primary btn-block btn-lg">Fetch</button>
                                                     </div>
                                                 </form>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingThree">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                <div className="panel panel-default">
+                                    <div className="panel-heading" role="tab" id="headingThree">
+                                        <h4 className="panel-title">
+                                            <a className="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                                 Apply for leave
                                                 <span> </span>
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                        <div class="panel-body">
-                                            <div class="signup-form">
+                                    <div id="collapseThree" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div className="panel-body">
+                                            <div className="signup-form">
                                                 <form onSubmit={this.handleAskLeave}>
-                                                    <div class="form-group">
+                                                    <div className="form-group">
                                                         <label>&nbsp;From </label>
                                                         <br></br>
                                                         <DatePicker selected={this.state.fromdate} onChange = {this.handleFromDate}/>
@@ -241,8 +240,8 @@ class InitialPage extends Component {
                                                         <br></br>
                                                         <DatePicker selected={this.state.todate} onChange = {this.handleToDate}/>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
+                                                    <div className="form-group">
+                                                        <button type="submit" className="btn btn-primary btn-block btn-lg">Apply</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -250,7 +249,7 @@ class InitialPage extends Component {
                                     </div>
                                 </div>
 
-                                <div class="panel panel-default">
+                                <div className="panel panel-default">
                                     <div id="temp">
                                         <h4 >
                                             <b>Pending Leave Requests</b>

@@ -45,7 +45,6 @@ class InitialPage extends Component {
 
     handleFromDate = async (e) => {
         await this.setState({fromdate: e});
-        var now = new Date();
         // console.log(this.state.fromdate.getTime());
         // let x = new Date(this.state.fromdate.getTime());
         // console.log(moment(x).format("DD/MM/YYYY"));
@@ -83,15 +82,15 @@ class InitialPage extends Component {
     }
     test = (val) => {
         if(val == 0)return(
-            <td class = "statusPending"><span>Pending</span></td>
+            <td className = "statusPending"><span>Pending</span></td>
         );
-        else if(val ==1 )return(<td class = "statusApproved"><span> &#10004; Approved</span></td>);
-        else if(val == 2)return <td class = "statusCancelled"><span>&#10008; Rejected</span></td>
-        else return <td class = "statusCancelled"><span>&#10008; Cancelled</span></td>
+        else if(val ==1 )return(<td className = "statusApproved"><span> &#10004; Approved</span></td>);
+        else if(val == 2)return <td className = "statusCancelled"><span>&#10008; Rejected</span></td>
+        else return <td className = "statusCancelled"><span>&#10008; Cancelled</span></td>
     }
     test2 = (val, ind) => {
         if(val == 0)return(
-            <td><button class = "btn btn-danger btn-small" type = "button" onClick = {async () => {
+            <td><button className = "btn btn-danger btn-small" type = "button" onClick = {async () => {
                 await this.state.contract.methods.cancelLeave(ind).send({ from: this.state.accounts[0] });
                 window.location.reload();
             }}>Cancel</button></td>
@@ -104,32 +103,32 @@ class InitialPage extends Component {
     render() {
         return (
             <div id="main">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-offset-1 col-md-10">
-                        <h2 class=" text-white">Welcome <span>{this.state.name}</span>!
+            <div className="container">
+                <div className="row">
+                    <div className="col-md-offset-1 col-md-10">
+                        <h2 className=" text-white">Welcome <span>{this.state.name}</span>!
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         Leaves Remaining:<span>{this.state.remainingLeaves}</span></h2>
                         
 
-                        <span class="loader pull-right"><span class="loader-inner"></span></span>
+                        <span className="loader pull-right"><span className="loader-inner"></span></span>
                         <br></br>
 
 
-                        <div class="panel panel-default">
-                                    <div class="panel-heading" role="tab" id="headingThree">
-                                        <h4 class="panel-title">
-                                            <a class="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <div className="panel panel-default">
+                                    <div className="panel-heading" role="tab" id="headingThree">
+                                        <h4 className="panel-title">
+                                            <a className="collapsed last" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                                                 Apply for leave
                                                 <span> </span>
                                             </a>
                                         </h4>
                                     </div>
-                                    <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                        <div class="panel-body">
-                                            <div class="signup-form">
+                                    <div id="collapseThree" className="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                        <div className="panel-body">
+                                            <div className="signup-form">
                                                 <form onSubmit={this.handleAskLeave}>
-                                                    <div class="form-group">
+                                                    <div className="form-group">
                                                         <label>&nbsp;From </label>
                                                         <br></br>
                                                         <DatePicker selected={this.state.fromdate} onChange = {this.handleFromDate}/>
@@ -138,8 +137,8 @@ class InitialPage extends Component {
                                                         <br></br>
                                                         <DatePicker selected={this.state.todate} onChange = {this.handleToDate}/>
                                                     </div>
-                                                    <div class="form-group">
-                                                        <button type="submit" class="btn btn-primary btn-block btn-lg">Apply</button>
+                                                    <div className="form-group">
+                                                        <button type="submit" className="btn btn-primary btn-block btn-lg">Apply</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -148,10 +147,10 @@ class InitialPage extends Component {
                         </div>
 
 
-                        <div class="panel panel-default">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                                <h4 class="panel-title">
-                                    <a class="collapsed last" role="button" data-toggle="collapse"
+                        <div className="panel panel-default">
+                            <div className="panel-heading" role="tab" id="headingThree">
+                                <h4 className="panel-title">
+                                    <a className="collapsed last" role="button" data-toggle="collapse"
                                         data-parent="#accordion" href="#collapseTwo" aria-expanded="false"
                                         aria-controls="collapseThree">
                                         My Leaves
@@ -159,9 +158,9 @@ class InitialPage extends Component {
                                     </a>
                                 </h4>
                             </div>
-                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel"
+                            <div id="collapseTwo" className="panel-collapse collapse" role="tabpanel"
                                 aria-labelledby="headingThree">
-                                <div class="panel-body">
+                                <div className="panel-body">
 
                                     <table>
                                         <thead>
