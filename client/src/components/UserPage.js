@@ -107,7 +107,7 @@ class InitialPage extends Component {
                 <div className="row">
                     <div className="col-md-offset-1 col-md-10">
                         <h2 className=" text-white">Welcome <span>{this.state.name}</span>!
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <br></br><br></br>
                         Leaves Remaining:<span>{this.state.remainingLeaves}</span></h2>
                         
 
