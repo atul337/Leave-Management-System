@@ -20,10 +20,10 @@ class InitialPage extends Component {
     
         if(window.confirm("Register Admin?")){
           await contract.methods.makeadmin(event.target.name.value, event.target.id.value).send({ from: accounts[0] });
-          window.location.reload();
+            window.location.reload();
         }
         else {
-          window.location.reload();
+            window.location.reload();
         }
     }
 

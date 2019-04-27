@@ -230,7 +230,7 @@ contract Leave
     //fetch details of a user
     function details(string memory idd) public view returns (bool, string memory, uint)
     {
-        require(msg.sender==admin);
+        require(msg.sender == admin);
         string memory tempName;
         // uint leaveCount;
         uint daysCount;//number of days remaining

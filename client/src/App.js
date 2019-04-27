@@ -7,6 +7,7 @@ import UserPage from "./components/UserPage"
 
 class App extends Component {
   state = {
+    ok:false,
     adminDone : false, 
     web3: null, 
     accounts: null, 
@@ -34,7 +35,7 @@ class App extends Component {
 
       // Set web3, accounts, and contract to the state, and then proceed with an
       // example of interacting with the contract's methods.
-      this.setState({ web3, accounts, contract: instance }, this.runExample);
+      await this.setState({ web3, accounts, contract: instance }, this.runExample);
     } catch (error) {
       // Catch any errors for any of the above operations.
       alert(
@@ -55,7 +56,7 @@ class App extends Component {
     // const tempdetails = await contract.methods.curdetails(accounts[0]).call();
 
     // Update state with the result.
-    this.setState({ adminDone: response, adminAdress: adminadd, userExist:userexist, maxleaves:ml});
+    await this.setState({ adminDone: response, adminAdress: adminadd, userExist:userexist, maxleaves:ml, ok:true});
     // console.log(this.state.userExist);
     // this.handleChange = this.handleChange.bind(this);
     // this.setState({ curName: tempdetails[0], curID: tempdetails[1], leavesRemain: (this.state.curmaxleave - tempdetails[2])});
@@ -65,8 +66,7 @@ class App extends Component {
     if (!this.state.web3) {
       return ("Waiting for injected web3!");
     }
-    
-    else if(!this.state.adminDone){ 
+    else if(!this.state.adminDone && this.state.ok){ 
       return( <InitialPage   accounts = {this.state.accounts} contract = {this.state.contract}/>);
     }
     // eslint-disable-next-line
@@ -76,7 +76,8 @@ class App extends Component {
     else if(this.state.userExist){
       return(<UserPage   accounts = {this.state.accounts} contract = {this.state.contract} maxleaves = {this.state.maxleaves}/>);
     }
-    else return(<div id = "noone"><h2>You are not registered yet. Contact Admin</h2></div>);
+    else if(this.state.ok) return(<div id = "noone"><h2>You are not registered yet. Contact Admin</h2></div>);
+    else return (<div id = "noone"><h2>Loading.....</h2></div>);
   }
 }
 

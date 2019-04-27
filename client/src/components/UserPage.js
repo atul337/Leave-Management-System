@@ -209,3 +209,4 @@ class InitialPage extends Component {
 }
 
 export default InitialPage;
+
