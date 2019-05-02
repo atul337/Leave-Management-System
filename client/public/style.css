@@ -13,3 +13,15 @@ nav{
 #noone h2{
     color: white;
 }
+
+footer {
+    background: #1A1E25;
+    color: #868c96;
+    margin-top:25%;
+    margin-bottom:0px;
+}
+
+footer p {
+    padding: 20px 0;
+    text-align: center;
+}
