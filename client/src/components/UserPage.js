@@ -72,8 +72,10 @@ class InitialPage extends Component {
             window.location.reload();
         }
         else if (window.confirm("Apply for leave")) {
-            await contract.methods.ask_leave(days, this.state.fromdate.getTime(), this.state.todate.getTime()).send({ from: accounts[0] });
-            window.location.reload();
+            await contract.methods.ask_leave(days, this.state.fromdate.getTime(), this.state.todate.getTime()).send({ from: accounts[0] }, () =>{
+                window.location.reload();
+            });
+            // window.location.reload();
         }
         else {
             window.location.reload();
@@ -91,8 +93,10 @@ class InitialPage extends Component {
     test2 = (val, ind) => {
         if(val == 0)return(
             <td><button className = "btn btn-danger btn-small" type = "button" onClick = {async () => {
-                await this.state.contract.methods.cancelLeave(ind).send({ from: this.state.accounts[0] });
-                window.location.reload();
+                await this.state.contract.methods.cancelLeave(ind).send({ from: this.state.accounts[0] }, () =>{
+                    window.location.reload();
+                });
+                // window.location.reload();
             }}>Cancel</button></td>
         );
         else if(val ==1 )return(<td>N/A</td>);

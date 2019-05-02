@@ -47,8 +47,10 @@ class InitialPage extends Component {
 
         if (window.confirm("Register Employee?")) {
             // console.log(this.state);
-            await contract.methods.register(event.target.address.value, event.target.name.value, event.target.id.value).send({ from: accounts[0] });
-            window.location.reload();
+            await contract.methods.register(event.target.address.value, event.target.name.value, event.target.id.value).send({ from: accounts[0] }, () =>{
+                window.location.reload();
+            });
+            // window.location.reload();
         }
         else {
             window.location.reload();
@@ -87,6 +89,7 @@ class InitialPage extends Component {
         // console.log(days);
         const { accounts, contract } = this.state;
         var now = new Date();
+
         if(this.state.fromdate.getTime() < now.getTime()){
             alert("Start date should be after today!");
             window.location.reload();
@@ -96,8 +99,10 @@ class InitialPage extends Component {
             window.location.reload();
         }
         else if (window.confirm("Apply for leave")) {
-            await contract.methods.ask_leave(days, this.state.fromdate.getTime(), this.state.todate.getTime()).send({ from: accounts[0] });
-            window.location.reload();
+            await contract.methods.ask_leave(days, this.state.fromdate.getTime(), this.state.todate.getTime()).send({ from: accounts[0] }, () =>{
+                window.location.reload();
+            });
+            // window.location.reload();
         }
         else {
             window.location.reload();
@@ -129,14 +134,18 @@ class InitialPage extends Component {
                     </td>
                     <td><div className="w3-section">
                         <button className="btn btn-success btn-small" onClick = {async () => {
-                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] });
-                            window.location.reload();
+                            await this.state.contract.methods.approve_leave(value[0]).send({ from: this.state.accounts[0] }, () =>{
+                                window.location.reload();
+                            });
+                            // window.location.reload();
                         }}>
                         Approve
                         </button><span>&nbsp;</span>
                         <button className="btn btn-danger btn-small" onClick = {async () => {
-                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] });
-                            window.location.reload();
+                            await this.state.contract.methods.reject_leave(value[0]).send({ from: this.state.accounts[0] }, () =>{
+                                window.location.reload();
+                            });
+                            // window.location.reload();
                         }}>
                         
                         Reject
