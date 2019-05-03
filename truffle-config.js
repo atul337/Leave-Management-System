@@ -15,6 +15,11 @@ module.exports = {
         host: "172.16.186.128",
         port: 7545,
         network_id: "5777",
+    },
+    demo: {
+        host: "172.16.157.221",
+        port: 7545,
+        network_id: "5777",
     }
   }
 };
